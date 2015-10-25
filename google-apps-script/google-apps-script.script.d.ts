@@ -7,6 +7,53 @@
 declare module GoogleAppsScript {
   export module Script {
     /**
+     * Access and manipulate script publishing and triggers. This class allows users to create script
+     *  triggers and control publishing the script as a service.
+     */
+    export interface ScriptApp {
+      AuthMode: AuthMode
+      AuthorizationStatus: AuthorizationStatus
+      EventType: EventType
+      InstallationSource: InstallationSource
+      TriggerSource: TriggerSource
+      WeekDay: Base.Weekday
+      deleteTrigger(trigger: Trigger): void;
+      getAuthorizationInfo(authMode: AuthMode): AuthorizationInfo;
+      getInstallationSource(): InstallationSource;
+      getOAuthToken(): String;
+      getProjectKey(): String;
+      getProjectTriggers(): Trigger[];
+      getService(): Service;
+      getUserTriggers(document: Document.Document): Trigger[];
+      getUserTriggers(form: Forms.Form): Trigger[];
+      getUserTriggers(spreadsheet: Spreadsheet.Spreadsheet): Trigger[];
+      invalidateAuth(): void;
+      newStateToken(): StateTokenBuilder;
+      newTrigger(functionName: String): TriggerBuilder;
+      getScriptTriggers(): Trigger[];
+    }
+
+    /**
+     * An object used to determine whether the user needs to authorize this script to use
+     *  one or more services, and to provide the URL for an authorization dialog. If the script
+     *  is published as an add-on that uses
+     *  installable triggers, this information
+     *  can be used to control access to sections of code for which the user lacks the necessary
+     *  authorization. Alternately, the add-on can ask the user to open the URL for the
+     *  authorization dialog to resolve the problem.
+     * 
+     * This object is returned by
+     *  ScriptApp.getAuthorizationInfo(authMode). In almost all cases,
+     *  scripts should call
+     *  ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL), since no other
+     *  authorization mode requires that users grant authorization.
+     */
+    export interface AuthorizationInfo {
+      getAuthorizationStatus(): AuthorizationStatus;
+      getAuthorizationUrl(): String;
+    }
+
+    /**
      * A builder for document triggers.
      */
     export interface DocumentTriggerBuilder {
@@ -34,52 +81,9 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An object used to determine whether the user needs to authorize this script to use
-     *  one or more services, and to provide the URL for an authorization dialog. If the script
-     *  is published as an add-on that uses
-     *  installable triggers, this information
-     *  can be used to control access to sections of code for which the user lacks the necessary
-     *  authorization. Alternately, the add-on can ask the user to open the URL for the
-     *  authorization dialog to resolve the problem.
      * 
-     * This object is returned by
-     *  ScriptApp.getAuthorizationInfo(authMode). In almost all cases,
-     *  scripts should call
-     *  ScriptApp.getAuthorizationInfo(ScriptApp.AuthMode.FULL), since no other
-     *  authorization mode requires that users grant authorization.
      */
-    export interface AuthorizationInfo {
-      getAuthorizationStatus(): AuthorizationStatus;
-      getAuthorizationUrl(): String;
-    }
-
-    /**
-     * Access and manipulate script publishing and triggers.
-     * 
-     *  This class allows users to create script triggers and control publishing the script as a service.
-     */
-    export interface ScriptApp {
-      AuthMode: AuthMode
-      AuthorizationStatus: AuthorizationStatus
-      EventType: EventType
-      InstallationSource: InstallationSource
-      TriggerSource: TriggerSource
-      WeekDay: Base.Weekday
-      deleteTrigger(trigger: Trigger): void;
-      getAuthorizationInfo(authMode: AuthMode): AuthorizationInfo;
-      getInstallationSource(): InstallationSource;
-      getOAuthToken(): String;
-      getProjectKey(): String;
-      getProjectTriggers(): Trigger[];
-      getService(): Service;
-      getUserTriggers(document: Document.Document): Trigger[];
-      getUserTriggers(form: Forms.Form): Trigger[];
-      getUserTriggers(spreadsheet: Spreadsheet.Spreadsheet): Trigger[];
-      invalidateAuth(): void;
-      newStateToken(): StateTokenBuilder;
-      newTrigger(functionName: String): TriggerBuilder;
-      getScriptTriggers(): Trigger[];
-    }
+    export enum Service { MYSELF, DOMAIN, ALL }
 
     /**
      * A builder for form triggers.
@@ -88,17 +92,6 @@ declare module GoogleAppsScript {
       create(): Trigger;
       onFormSubmit(): FormTriggerBuilder;
       onOpen(): FormTriggerBuilder;
-    }
-
-    /**
-     * Builder for spreadsheet triggers.
-     */
-    export interface SpreadsheetTriggerBuilder {
-      create(): Trigger;
-      onChange(): SpreadsheetTriggerBuilder;
-      onEdit(): SpreadsheetTriggerBuilder;
-      onFormSubmit(): SpreadsheetTriggerBuilder;
-      onOpen(): SpreadsheetTriggerBuilder;
     }
 
     /**
@@ -115,9 +108,28 @@ declare module GoogleAppsScript {
     }
 
     /**
+     * Allows scripts to create state tokens that can be used in callback APIs (like OAuth flows).
      * 
+     *      // Reusable function to generate a callback URL, assuming the script has been published as a
+     *      // web app (necessary to obtain the URL programmatically). If the script has not been published
+     *      // as a web app, set `var url` in the first line to the URL of your script project (which
+     *      // cannot be obtained programmatically).
+     *      function getCallbackURL(callbackFunction){
+     *        var url = ScriptApp.getService().getUrl();      // Ends in /exec (for a web app)
+     *        url = url.slice(0, -4) + 'usercallback?state='; // Change /exec to /usercallback
+     *        var stateToken = ScriptApp.newStateToken()
+     *            .withMethod(callbackFunction)
+     *            .withTimeout(120)
+     *            .createToken();
+     *        return url + stateToken;
+     *      }
      */
-    export enum Service { MYSELF, DOMAIN, ALL }
+    export interface StateTokenBuilder {
+      createToken(): String;
+      withArgument(name: String, value: String): StateTokenBuilder;
+      withMethod(method: String): StateTokenBuilder;
+      withTimeout(seconds: Integer): StateTokenBuilder;
+    }
 
     /**
      * A script trigger.
@@ -131,9 +143,26 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An enumeration denoting the type of triggered event.
+     * Builder for spreadsheet triggers.
      */
-    export enum EventType { CLOCK, ON_OPEN, ON_EDIT, ON_FORM_SUBMIT, ON_CHANGE }
+    export interface SpreadsheetTriggerBuilder {
+      create(): Trigger;
+      onChange(): SpreadsheetTriggerBuilder;
+      onEdit(): SpreadsheetTriggerBuilder;
+      onFormSubmit(): SpreadsheetTriggerBuilder;
+      onOpen(): SpreadsheetTriggerBuilder;
+    }
+
+    /**
+     * An enumeration that indicates how the script came to be installed as an add-on for the
+     *  current user.
+     */
+    export enum InstallationSource { APPS_MARKETPLACE_DOMAIN_ADD_ON, NONE, WEB_STORE_ADD_ON }
+
+    /**
+     * An enumeration denoting the authorization status of a script.
+     */
+    export enum AuthorizationStatus { REQUIRED, NOT_REQUIRED }
 
     /**
      * An enumeration that identifies which categories of authorized services Apps Script
@@ -166,43 +195,14 @@ declare module GoogleAppsScript {
     export enum AuthMode { NONE, CUSTOM_FUNCTION, LIMITED, FULL }
 
     /**
-     * Allows scripts to create state tokens that can be used in callback APIs (like OAuth flows).
-     * 
-     *      // Reusable function to generate a callback URL, assuming the script has been published as a
-     *      // web app (necessary to obtain the URL programmatically). If the script has not been published
-     *      // as a web app, set `var url` in the first line to the URL of your script project (which
-     *      // cannot be obtained programmatically).
-     *      function getCallbackURL(callbackFunction){
-     *        var url = ScriptApp.getService().getUrl();      // Ends in /exec (for a web app)
-     *        url = url.slice(0, -4) + 'usercallback?state='; // Change /exec to /usercallback
-     *        var stateToken = ScriptApp.newStateToken()
-     *            .withMethod(callbackFunction)
-     *            .withTimeout(120)
-     *            .createToken();
-     *        return url + stateToken;
-     *      }
+     * An enumeration denoting the type of triggered event.
      */
-    export interface StateTokenBuilder {
-      createToken(): String;
-      withArgument(name: String, value: String): StateTokenBuilder;
-      withMethod(method: String): StateTokenBuilder;
-      withTimeout(seconds: Integer): StateTokenBuilder;
-    }
-
-    /**
-     * An enumeration denoting the authorization status of a script.
-     */
-    export enum AuthorizationStatus { REQUIRED, NOT_REQUIRED }
+    export enum EventType { CLOCK, ON_OPEN, ON_EDIT, ON_FORM_SUBMIT, ON_CHANGE }
 
     /**
      * An enumeration denoting the source of the event that causes the trigger to fire.
      */
     export enum TriggerSource { SPREADSHEETS, CLOCK, FORMS, DOCUMENTS }
-
-    /**
-     * An enumeration that indicates how the script came to be installed as an add-on for the current user.
-     */
-    export enum InstallationSource { APPS_MARKETPLACE_DOMAIN_ADD_ON, NONE, WEB_STORE_ADD_ON }
 
   }
 }

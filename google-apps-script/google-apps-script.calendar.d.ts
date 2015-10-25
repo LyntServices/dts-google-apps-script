@@ -4,114 +4,6 @@
 declare module GoogleAppsScript {
   export module Calendar {
     /**
-     * Represents a calendar that the user owns or is subscribed to.
-     */
-    export interface Calendar {
-      createAllDayEvent(title: String, date: Date): CalendarEvent;
-      createAllDayEvent(title: String, date: Date, options: Object): CalendarEvent;
-      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence): CalendarEventSeries;
-      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
-      createEvent(title: String, startTime: Date, endTime: Date): CalendarEvent;
-      createEvent(title: String, startTime: Date, endTime: Date, options: Object): CalendarEvent;
-      createEventFromDescription(description: String): CalendarEvent;
-      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence): CalendarEventSeries;
-      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
-      deleteCalendar(): void;
-      getColor(): String;
-      getDescription(): String;
-      getEventSeriesById(iCalId: String): CalendarEventSeries;
-      getEvents(startTime: Date, endTime: Date): CalendarEvent[];
-      getEvents(startTime: Date, endTime: Date, options: Object): CalendarEvent[];
-      getEventsForDay(date: Date): CalendarEvent[];
-      getEventsForDay(date: Date, options: Object): CalendarEvent[];
-      getId(): String;
-      getName(): String;
-      getTimeZone(): String;
-      isHidden(): Boolean;
-      isMyPrimaryCalendar(): Boolean;
-      isOwnedByMe(): Boolean;
-      isSelected(): Boolean;
-      setColor(color: String): Calendar;
-      setDescription(description: String): Calendar;
-      setHidden(hidden: Boolean): Calendar;
-      setName(name: String): Calendar;
-      setSelected(selected: Boolean): Calendar;
-      setTimeZone(timeZone: String): Calendar;
-      unsubscribeFromCalendar(): void;
-    }
-
-    /**
-     * Allows a script to read and update the user's Google Calendar. This class provides direct
-     *  access to the user's default calendar, as well as the ability to retrieve additional calendars
-     *  that the user owns or is subscribed to.
-     */
-    export interface CalendarApp {
-      Color: Color
-      GuestStatus: GuestStatus
-      Month: Base.Month
-      Visibility: Visibility
-      Weekday: Base.Weekday
-      createAllDayEvent(title: String, date: Date): CalendarEvent;
-      createAllDayEvent(title: String, date: Date, options: Object): CalendarEvent;
-      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence): CalendarEventSeries;
-      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
-      createCalendar(name: String): Calendar;
-      createCalendar(name: String, options: Object): Calendar;
-      createEvent(title: String, startTime: Date, endTime: Date): CalendarEvent;
-      createEvent(title: String, startTime: Date, endTime: Date, options: Object): CalendarEvent;
-      createEventFromDescription(description: String): CalendarEvent;
-      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence): CalendarEventSeries;
-      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
-      getAllCalendars(): Calendar[];
-      getAllOwnedCalendars(): Calendar[];
-      getCalendarById(id: String): Calendar;
-      getCalendarsByName(name: String): Calendar[];
-      getColor(): String;
-      getDefaultCalendar(): Calendar;
-      getDescription(): String;
-      getEventSeriesById(iCalId: String): CalendarEventSeries;
-      getEvents(startTime: Date, endTime: Date): CalendarEvent[];
-      getEvents(startTime: Date, endTime: Date, options: Object): CalendarEvent[];
-      getEventsForDay(date: Date): CalendarEvent[];
-      getEventsForDay(date: Date, options: Object): CalendarEvent[];
-      getId(): String;
-      getName(): String;
-      getOwnedCalendarById(id: String): Calendar;
-      getOwnedCalendarsByName(name: String): Calendar[];
-      getTimeZone(): String;
-      isHidden(): Boolean;
-      isMyPrimaryCalendar(): Boolean;
-      isOwnedByMe(): Boolean;
-      isSelected(): Boolean;
-      newRecurrence(): EventRecurrence;
-      setColor(color: String): Calendar;
-      setDescription(description: String): Calendar;
-      setHidden(hidden: Boolean): Calendar;
-      setName(name: String): Calendar;
-      setSelected(selected: Boolean): Calendar;
-      setTimeZone(timeZone: String): Calendar;
-      subscribeToCalendar(id: String): Calendar;
-      subscribeToCalendar(id: String, options: Object): Calendar;
-    }
-
-    /**
-     * Represents the recurrence settings for an event series.
-     */
-    export interface EventRecurrence {
-      addDailyExclusion(): RecurrenceRule;
-      addDailyRule(): RecurrenceRule;
-      addDate(date: Date): EventRecurrence;
-      addDateExclusion(date: Date): EventRecurrence;
-      addMonthlyExclusion(): RecurrenceRule;
-      addMonthlyRule(): RecurrenceRule;
-      addWeeklyExclusion(): RecurrenceRule;
-      addWeeklyRule(): RecurrenceRule;
-      addYearlyExclusion(): RecurrenceRule;
-      addYearlyRule(): RecurrenceRule;
-      setTimeZone(timeZone: String): EventRecurrence;
-    }
-
-    /**
      * Represents a single calendar event.
      */
     export interface CalendarEvent {
@@ -169,6 +61,97 @@ declare module GoogleAppsScript {
     }
 
     /**
+     * Allows a script to read and update the user's Google Calendar. This class provides direct
+     *  access to the user's default calendar, as well as the ability to retrieve additional calendars
+     *  that the user owns or is subscribed to.
+     */
+    export interface CalendarApp {
+      Color: Color
+      GuestStatus: GuestStatus
+      Month: Base.Month
+      Visibility: Visibility
+      Weekday: Base.Weekday
+      createAllDayEvent(title: String, date: Date): CalendarEvent;
+      createAllDayEvent(title: String, date: Date, options: Object): CalendarEvent;
+      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence): CalendarEventSeries;
+      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
+      createCalendar(name: String): Calendar;
+      createCalendar(name: String, options: Object): Calendar;
+      createEvent(title: String, startTime: Date, endTime: Date): CalendarEvent;
+      createEvent(title: String, startTime: Date, endTime: Date, options: Object): CalendarEvent;
+      createEventFromDescription(description: String): CalendarEvent;
+      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence): CalendarEventSeries;
+      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
+      getAllCalendars(): Calendar[];
+      getAllOwnedCalendars(): Calendar[];
+      getCalendarById(id: String): Calendar;
+      getCalendarsByName(name: String): Calendar[];
+      getColor(): String;
+      getDefaultCalendar(): Calendar;
+      getDescription(): String;
+      getEventSeriesById(iCalId: String): CalendarEventSeries;
+      getEvents(startTime: Date, endTime: Date): CalendarEvent[];
+      getEvents(startTime: Date, endTime: Date, options: Object): CalendarEvent[];
+      getEventsForDay(date: Date): CalendarEvent[];
+      getEventsForDay(date: Date, options: Object): CalendarEvent[];
+      getId(): String;
+      getName(): String;
+      getOwnedCalendarById(id: String): Calendar;
+      getOwnedCalendarsByName(name: String): Calendar[];
+      getTimeZone(): String;
+      isHidden(): Boolean;
+      isMyPrimaryCalendar(): Boolean;
+      isOwnedByMe(): Boolean;
+      isSelected(): Boolean;
+      newRecurrence(): EventRecurrence;
+      setColor(color: String): Calendar;
+      setDescription(description: String): Calendar;
+      setHidden(hidden: Boolean): Calendar;
+      setName(name: String): Calendar;
+      setSelected(selected: Boolean): Calendar;
+      setTimeZone(timeZone: String): Calendar;
+      subscribeToCalendar(id: String): Calendar;
+      subscribeToCalendar(id: String, options: Object): Calendar;
+    }
+
+    /**
+     * Represents a calendar that the user owns or is subscribed to.
+     */
+    export interface Calendar {
+      createAllDayEvent(title: String, date: Date): CalendarEvent;
+      createAllDayEvent(title: String, date: Date, options: Object): CalendarEvent;
+      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence): CalendarEventSeries;
+      createAllDayEventSeries(title: String, startDate: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
+      createEvent(title: String, startTime: Date, endTime: Date): CalendarEvent;
+      createEvent(title: String, startTime: Date, endTime: Date, options: Object): CalendarEvent;
+      createEventFromDescription(description: String): CalendarEvent;
+      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence): CalendarEventSeries;
+      createEventSeries(title: String, startTime: Date, endTime: Date, recurrence: EventRecurrence, options: Object): CalendarEventSeries;
+      deleteCalendar(): void;
+      getColor(): String;
+      getDescription(): String;
+      getEventSeriesById(iCalId: String): CalendarEventSeries;
+      getEvents(startTime: Date, endTime: Date): CalendarEvent[];
+      getEvents(startTime: Date, endTime: Date, options: Object): CalendarEvent[];
+      getEventsForDay(date: Date): CalendarEvent[];
+      getEventsForDay(date: Date, options: Object): CalendarEvent[];
+      getId(): String;
+      getName(): String;
+      getTimeZone(): String;
+      isHidden(): Boolean;
+      isMyPrimaryCalendar(): Boolean;
+      isOwnedByMe(): Boolean;
+      isSelected(): Boolean;
+      setColor(color: String): Calendar;
+      setDescription(description: String): Calendar;
+      setHidden(hidden: Boolean): Calendar;
+      setName(name: String): Calendar;
+      setSelected(selected: Boolean): Calendar;
+      setTimeZone(timeZone: String): Calendar;
+      unsubscribeFromCalendar(): void;
+    }
+
+    /**
      * Represents a series of events (a recurring event).
      */
     export interface CalendarEventSeries {
@@ -219,14 +202,20 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * Represents a guest of an event.
+     * Represents the recurrence settings for an event series.
      */
-    export interface EventGuest {
-      getAdditionalGuests(): Integer;
-      getEmail(): String;
-      getGuestStatus(): GuestStatus;
-      getName(): String;
-      getStatus(): String;
+    export interface EventRecurrence {
+      addDailyExclusion(): RecurrenceRule;
+      addDailyRule(): RecurrenceRule;
+      addDate(date: Date): EventRecurrence;
+      addDateExclusion(date: Date): EventRecurrence;
+      addMonthlyExclusion(): RecurrenceRule;
+      addMonthlyRule(): RecurrenceRule;
+      addWeeklyExclusion(): RecurrenceRule;
+      addWeeklyRule(): RecurrenceRule;
+      addYearlyExclusion(): RecurrenceRule;
+      addYearlyRule(): RecurrenceRule;
+      setTimeZone(timeZone: String): EventRecurrence;
     }
 
     /**
@@ -269,6 +258,22 @@ declare module GoogleAppsScript {
     }
 
     /**
+     * Represents a guest of an event.
+     */
+    export interface EventGuest {
+      getAdditionalGuests(): Integer;
+      getEmail(): String;
+      getGuestStatus(): GuestStatus;
+      getName(): String;
+      getStatus(): String;
+    }
+
+    /**
+     * An enum representing the visibility of an event.
+     */
+    export enum Visibility { CONFIDENTIAL, DEFAULT, PRIVATE, PUBLIC }
+
+    /**
      * An enum representing the named colors available in the Calendar service.
      */
     export enum Color { BLUE, BROWN, CHARCOAL, CHESTNUT, GRAY, GREEN, INDIGO, LIME, MUSTARD, OLIVE, ORANGE, PINK, PLUM, PURPLE, RED, RED_ORANGE, SEA_BLUE, SLATE, TEAL, TURQOISE, YELLOW }
@@ -277,11 +282,6 @@ declare module GoogleAppsScript {
      * An enum representing the statuses a guest can have for an event.
      */
     export enum GuestStatus { INVITED, MAYBE, NO, OWNER, YES }
-
-    /**
-     * An enum representing the visibility of an event.
-     */
-    export enum Visibility { CONFIDENTIAL, DEFAULT, PRIVATE, PUBLIC }
 
   }
 }

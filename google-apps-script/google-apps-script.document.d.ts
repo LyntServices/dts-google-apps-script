@@ -29,21 +29,6 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An object representing a bookmark.
-     * 
-     *      // Insert a bookmark at the cursor position and log its ID.
-     *      var doc = DocumentApp.getActiveDocument();
-     *      var cursor = doc.getCursor();
-     *      var bookmark = doc.addBookmark(cursor);
-     *      Logger.log(bookmark.getId());
-     */
-    export interface Bookmark {
-      getId(): String;
-      getPosition(): Position;
-      remove(): void;
-    }
-
-    /**
      * An element representing a document body. The Body may contain ListItem,
      *  Paragraph, Table, and TableOfContents elements. For more information on
      *  document structure, see the
@@ -129,22 +114,147 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An element representing a function separator in a mathematical Equation. An
-     *  EquationFunctionArgumentSeparator cannot contain any other element. For more information
-     *  on document structure, see the
-     *  guide to extending Google Docs.
+     * An object representing a bookmark.
+     * 
+     *      // Insert a bookmark at the cursor position and log its ID.
+     *      var doc = DocumentApp.getActiveDocument();
+     *      var cursor = doc.getCursor();
+     *      var bookmark = doc.addBookmark(cursor);
+     *      Logger.log(bookmark.getId());
      */
-    export interface EquationFunctionArgumentSeparator {
-      copy(): EquationFunctionArgumentSeparator;
+    export interface Bookmark {
+      getId(): String;
+      getPosition(): Position;
+      remove(): void;
+    }
+
+    /**
+     * A generic element that may contain other elements. All elements that may contain child elements,
+     *  such as Paragraph, inherit from ContainerElement.
+     */
+    export interface ContainerElement {
+      asBody(): Body;
+      asEquation(): Equation;
+      asFooterSection(): FooterSection;
+      asFootnoteSection(): FootnoteSection;
+      asHeaderSection(): HeaderSection;
+      asListItem(): ListItem;
+      asParagraph(): Paragraph;
+      asTable(): Table;
+      asTableCell(): TableCell;
+      asTableOfContents(): TableOfContents;
+      asTableRow(): TableRow;
+      clear(): ContainerElement;
+      copy(): ContainerElement;
+      editAsText(): Text;
+      findElement(elementType: ElementType): RangeElement;
+      findElement(elementType: ElementType, from: RangeElement): RangeElement;
+      findText(searchPattern: String): RangeElement;
+      findText(searchPattern: String, from: RangeElement): RangeElement;
       getAttributes(): Object;
+      getChild(childIndex: Integer): Element;
+      getChildIndex(child: Element): Integer;
+      getLinkUrl(): String;
       getNextSibling(): Element;
+      getNumChildren(): Integer;
       getParent(): ContainerElement;
       getPreviousSibling(): Element;
+      getText(): String;
+      getTextAlignment(): TextAlignment;
       getType(): ElementType;
       isAtDocumentEnd(): Boolean;
-      merge(): EquationFunctionArgumentSeparator;
-      removeFromParent(): EquationFunctionArgumentSeparator;
-      setAttributes(attributes: Object): EquationFunctionArgumentSeparator;
+      merge(): ContainerElement;
+      removeFromParent(): ContainerElement;
+      replaceText(searchPattern: String, replacement: String): Element;
+      setAttributes(attributes: Object): ContainerElement;
+      setLinkUrl(url: String): ContainerElement;
+      setTextAlignment(textAlignment: TextAlignment): ContainerElement;
+    }
+
+    /**
+     * A document, containing rich text and elements such as tables and lists.
+     * 
+     * Documents may be opened or created using DocumentApp.
+     * 
+     *      // Open a document by ID.
+     *      var doc = DocumentApp.openById("<my-id>");
+     *     
+     *      // Create and open a document.
+     *      doc = DocumentApp.create("Document Title");
+     */
+    export interface Document {
+      addBookmark(position: Position): Bookmark;
+      addEditor(emailAddress: String): Document;
+      addEditor(user: Base.User): Document;
+      addEditors(emailAddresses: String[]): Document;
+      addFooter(): FooterSection;
+      addHeader(): HeaderSection;
+      addNamedRange(name: String, range: Range): NamedRange;
+      addViewer(emailAddress: String): Document;
+      addViewer(user: Base.User): Document;
+      addViewers(emailAddresses: String[]): Document;
+      getAs(contentType: String): Base.Blob;
+      getBlob(): Base.Blob;
+      getBody(): Body;
+      getBookmark(id: String): Bookmark;
+      getBookmarks(): Bookmark[];
+      getCursor(): Position;
+      getEditors(): Base.User[];
+      getFooter(): FooterSection;
+      getFootnotes(): Footnote[];
+      getHeader(): HeaderSection;
+      getId(): String;
+      getName(): String;
+      getNamedRangeById(id: String): NamedRange;
+      getNamedRanges(): NamedRange[];
+      getNamedRanges(name: String): NamedRange[];
+      getSelection(): Range;
+      getUrl(): String;
+      getViewers(): Base.User[];
+      newPosition(element: Element, offset: Integer): Position;
+      newRange(): RangeBuilder;
+      removeEditor(emailAddress: String): Document;
+      removeEditor(user: Base.User): Document;
+      removeViewer(emailAddress: String): Document;
+      removeViewer(user: Base.User): Document;
+      saveAndClose(): void;
+      setCursor(position: Position): Document;
+      setName(name: String): Document;
+      setSelection(range: Range): Document;
+    }
+
+    /**
+     * An element representing a mathematical expression. An Equation may contain
+     *  EquationFunction, EquationSymbol, and Text elements.  For more
+     *  information on document structure, see the
+     *  guide to extending Google Docs.
+     */
+    export interface Equation {
+      clear(): Equation;
+      copy(): Equation;
+      editAsText(): Text;
+      findElement(elementType: ElementType): RangeElement;
+      findElement(elementType: ElementType, from: RangeElement): RangeElement;
+      findText(searchPattern: String): RangeElement;
+      findText(searchPattern: String, from: RangeElement): RangeElement;
+      getAttributes(): Object;
+      getChild(childIndex: Integer): Element;
+      getChildIndex(child: Element): Integer;
+      getLinkUrl(): String;
+      getNextSibling(): Element;
+      getNumChildren(): Integer;
+      getParent(): ContainerElement;
+      getPreviousSibling(): Element;
+      getText(): String;
+      getTextAlignment(): TextAlignment;
+      getType(): ElementType;
+      isAtDocumentEnd(): Boolean;
+      merge(): Equation;
+      removeFromParent(): Equation;
+      replaceText(searchPattern: String, replacement: String): Element;
+      setAttributes(attributes: Object): Equation;
+      setLinkUrl(url: String): Equation;
+      setTextAlignment(textAlignment: TextAlignment): Equation;
     }
 
     /**
@@ -181,40 +291,6 @@ declare module GoogleAppsScript {
       setAttributes(attributes: Object): EquationFunction;
       setLinkUrl(url: String): EquationFunction;
       setTextAlignment(textAlignment: TextAlignment): EquationFunction;
-    }
-
-    /**
-     * An element representing a mathematical expression. An Equation may contain
-     *  EquationFunction, EquationSymbol, and Text elements.  For more
-     *  information on document structure, see the
-     *  guide to extending Google Docs.
-     */
-    export interface Equation {
-      clear(): Equation;
-      copy(): Equation;
-      editAsText(): Text;
-      findElement(elementType: ElementType): RangeElement;
-      findElement(elementType: ElementType, from: RangeElement): RangeElement;
-      findText(searchPattern: String): RangeElement;
-      findText(searchPattern: String, from: RangeElement): RangeElement;
-      getAttributes(): Object;
-      getChild(childIndex: Integer): Element;
-      getChildIndex(child: Element): Integer;
-      getLinkUrl(): String;
-      getNextSibling(): Element;
-      getNumChildren(): Integer;
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getText(): String;
-      getTextAlignment(): TextAlignment;
-      getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      merge(): Equation;
-      removeFromParent(): Equation;
-      replaceText(searchPattern: String, replacement: String): Element;
-      setAttributes(attributes: Object): Equation;
-      setLinkUrl(url: String): Equation;
-      setTextAlignment(textAlignment: TextAlignment): Equation;
     }
 
     /**
@@ -299,58 +375,6 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * A document, containing rich text and elements such as tables and lists.
-     * 
-     * Documents may be opened or created using DocumentApp.
-     * 
-     *      // Open a document by ID.
-     *      var doc = DocumentApp.openById("<my-id>");
-     *     
-     *      // Create and open a document.
-     *      doc = DocumentApp.create("Document Title");
-     */
-    export interface Document {
-      addBookmark(position: Position): Bookmark;
-      addEditor(emailAddress: String): Document;
-      addEditor(user: Base.User): Document;
-      addEditors(emailAddresses: String[]): Document;
-      addFooter(): FooterSection;
-      addHeader(): HeaderSection;
-      addNamedRange(name: String, range: Range): NamedRange;
-      addViewer(emailAddress: String): Document;
-      addViewer(user: Base.User): Document;
-      addViewers(emailAddresses: String[]): Document;
-      getAs(contentType: String): Base.Blob;
-      getBlob(): Base.Blob;
-      getBody(): Body;
-      getBookmark(id: String): Bookmark;
-      getBookmarks(): Bookmark[];
-      getCursor(): Position;
-      getEditors(): Base.User[];
-      getFooter(): FooterSection;
-      getFootnotes(): Footnote[];
-      getHeader(): HeaderSection;
-      getId(): String;
-      getName(): String;
-      getNamedRangeById(id: String): NamedRange;
-      getNamedRanges(): NamedRange[];
-      getNamedRanges(name: String): NamedRange[];
-      getSelection(): Range;
-      getUrl(): String;
-      getViewers(): Base.User[];
-      newPosition(element: Element, offset: Integer): Position;
-      newRange(): RangeBuilder;
-      removeEditor(emailAddress: String): Document;
-      removeEditor(user: Base.User): Document;
-      removeViewer(emailAddress: String): Document;
-      removeViewer(user: Base.User): Document;
-      saveAndClose(): void;
-      setCursor(position: Position): Document;
-      setName(name: String): Document;
-      setSelection(range: Range): Document;
-    }
-
-    /**
      * An element representing a symbol in a mathematical Equation. An EquationSymbol
      *  cannot contain any other element. For more information on document structure, see the
      *  guide to extending Google Docs.
@@ -370,23 +394,55 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * A generic element that may contain other elements. All elements that may contain child elements,
-     *  such as Paragraph, inherit from ContainerElement.
+     * An element representing a function separator in a mathematical Equation. An
+     *  EquationFunctionArgumentSeparator cannot contain any other element. For more information
+     *  on document structure, see the
+     *  guide to extending Google Docs.
      */
-    export interface ContainerElement {
-      asBody(): Body;
-      asEquation(): Equation;
-      asFooterSection(): FooterSection;
-      asFootnoteSection(): FootnoteSection;
-      asHeaderSection(): HeaderSection;
-      asListItem(): ListItem;
-      asParagraph(): Paragraph;
-      asTable(): Table;
-      asTableCell(): TableCell;
-      asTableOfContents(): TableOfContents;
-      asTableRow(): TableRow;
-      clear(): ContainerElement;
-      copy(): ContainerElement;
+    export interface EquationFunctionArgumentSeparator {
+      copy(): EquationFunctionArgumentSeparator;
+      getAttributes(): Object;
+      getNextSibling(): Element;
+      getParent(): ContainerElement;
+      getPreviousSibling(): Element;
+      getType(): ElementType;
+      isAtDocumentEnd(): Boolean;
+      merge(): EquationFunctionArgumentSeparator;
+      removeFromParent(): EquationFunctionArgumentSeparator;
+      setAttributes(attributes: Object): EquationFunctionArgumentSeparator;
+    }
+
+    /**
+     * An element representing an embedded drawing. An InlineDrawing can be contained within a
+     *  ListItem or Paragraph, unless the ListItem or Paragraph is within
+     *  a FootnoteSection. An InlineDrawing cannot itself contain any other element. For
+     *  more information on document structure, see the
+     *  guide to extending Google Docs.
+     */
+    export interface InlineDrawing {
+      copy(): InlineDrawing;
+      getAttributes(): Object;
+      getNextSibling(): Element;
+      getParent(): ContainerElement;
+      getPreviousSibling(): Element;
+      getType(): ElementType;
+      isAtDocumentEnd(): Boolean;
+      merge(): InlineDrawing;
+      removeFromParent(): InlineDrawing;
+      setAttributes(attributes: Object): InlineDrawing;
+    }
+
+    /**
+     * An element representing a footnote section. A FootnoteSection contains the text that
+     *  corresponds to a Footnote. The FootnoteSection may contain ListItem or
+     *  Paragraph elements. For more information on document structure, see the
+     *  guide to extending Google Docs.
+     */
+    export interface FootnoteSection {
+      appendParagraph(paragraph: Paragraph): Paragraph;
+      appendParagraph(text: String): Paragraph;
+      clear(): FootnoteSection;
+      copy(): FootnoteSection;
       editAsText(): Text;
       findElement(elementType: ElementType): RangeElement;
       findElement(elementType: ElementType, from: RangeElement): RangeElement;
@@ -395,66 +451,106 @@ declare module GoogleAppsScript {
       getAttributes(): Object;
       getChild(childIndex: Integer): Element;
       getChildIndex(child: Element): Integer;
-      getLinkUrl(): String;
       getNextSibling(): Element;
       getNumChildren(): Integer;
+      getParagraphs(): Paragraph[];
       getParent(): ContainerElement;
       getPreviousSibling(): Element;
       getText(): String;
       getTextAlignment(): TextAlignment;
       getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      merge(): ContainerElement;
-      removeFromParent(): ContainerElement;
+      insertParagraph(childIndex: Integer, paragraph: Paragraph): Paragraph;
+      insertParagraph(childIndex: Integer, text: String): Paragraph;
+      removeChild(child: Element): FootnoteSection;
+      removeFromParent(): FootnoteSection;
       replaceText(searchPattern: String, replacement: String): Element;
-      setAttributes(attributes: Object): ContainerElement;
-      setLinkUrl(url: String): ContainerElement;
-      setTextAlignment(textAlignment: TextAlignment): ContainerElement;
+      setAttributes(attributes: Object): FootnoteSection;
+      setText(text: String): FootnoteSection;
+      setTextAlignment(textAlignment: TextAlignment): FootnoteSection;
+      getFootnotes(): Footnote[];
+      getLinkUrl(): String;
+      isAtDocumentEnd(): Boolean;
+      setLinkUrl(url: String): FootnoteSection;
     }
 
     /**
-     * An element representing a page break. A PageBreak can be contained within a
-     *  ListItem or Paragraph, unless the ListItem or Paragraph is within
-     *  a Table, HeaderSection, FooterSection, or FootnoteSection. A
-     *  PageBreak cannot itself contain any other element. For more information on document
+     * An element representing a header section. A
+     *  Document typically
+     *  contains at most one HeaderSection. The HeaderSection may contain
+     *  ListItem, Paragraph, and Table elements. For more information on document
      *  structure, see the
      *  guide to extending Google Docs.
      */
-    export interface PageBreak {
-      copy(): PageBreak;
+    export interface HeaderSection {
+      appendHorizontalRule(): HorizontalRule;
+      appendImage(image: Base.BlobSource): InlineImage;
+      appendImage(image: InlineImage): InlineImage;
+      appendListItem(listItem: ListItem): ListItem;
+      appendListItem(text: String): ListItem;
+      appendParagraph(paragraph: Paragraph): Paragraph;
+      appendParagraph(text: String): Paragraph;
+      appendTable(): Table;
+      appendTable(cells: String[][]): Table;
+      appendTable(table: Table): Table;
+      clear(): HeaderSection;
+      copy(): HeaderSection;
+      editAsText(): Text;
+      findElement(elementType: ElementType): RangeElement;
+      findElement(elementType: ElementType, from: RangeElement): RangeElement;
+      findText(searchPattern: String): RangeElement;
+      findText(searchPattern: String, from: RangeElement): RangeElement;
+      getAttributes(): Object;
+      getChild(childIndex: Integer): Element;
+      getChildIndex(child: Element): Integer;
+      getImages(): InlineImage[];
+      getListItems(): ListItem[];
+      getNumChildren(): Integer;
+      getParagraphs(): Paragraph[];
+      getParent(): ContainerElement;
+      getTables(): Table[];
+      getText(): String;
+      getTextAlignment(): TextAlignment;
+      getType(): ElementType;
+      insertHorizontalRule(childIndex: Integer): HorizontalRule;
+      insertImage(childIndex: Integer, image: Base.BlobSource): InlineImage;
+      insertImage(childIndex: Integer, image: InlineImage): InlineImage;
+      insertListItem(childIndex: Integer, listItem: ListItem): ListItem;
+      insertListItem(childIndex: Integer, text: String): ListItem;
+      insertParagraph(childIndex: Integer, paragraph: Paragraph): Paragraph;
+      insertParagraph(childIndex: Integer, text: String): Paragraph;
+      insertTable(childIndex: Integer): Table;
+      insertTable(childIndex: Integer, cells: String[][]): Table;
+      insertTable(childIndex: Integer, table: Table): Table;
+      removeChild(child: Element): HeaderSection;
+      removeFromParent(): HeaderSection;
+      replaceText(searchPattern: String, replacement: String): Element;
+      setAttributes(attributes: Object): HeaderSection;
+      setText(text: String): HeaderSection;
+      setTextAlignment(textAlignment: TextAlignment): HeaderSection;
+      getFootnotes(): Footnote[];
+      getLinkUrl(): String;
+      getNextSibling(): Element;
+      getPreviousSibling(): Element;
+      isAtDocumentEnd(): Boolean;
+      setLinkUrl(url: String): HeaderSection;
+    }
+
+    /**
+     * An element representing an horizontal rule. A HorizontalRule can be contained within a
+     *  ListItem or Paragraph, but cannot itself contain any other element. For more
+     *  information on document structure, see the
+     *  guide to extending Google Docs.
+     */
+    export interface HorizontalRule {
+      copy(): HorizontalRule;
       getAttributes(): Object;
       getNextSibling(): Element;
       getParent(): ContainerElement;
       getPreviousSibling(): Element;
       getType(): ElementType;
       isAtDocumentEnd(): Boolean;
-      removeFromParent(): PageBreak;
-      setAttributes(attributes: Object): PageBreak;
-    }
-
-    /**
-     * A Range that has a name and ID to allow later retrieval. Names are not
-     *  necessarily unique; several different ranges in the same document may share the same name, much
-     *  like a class in HTML. By contrast, IDs are unique within the document, like an ID in HTML. Once a
-     *  NamedRange has been added to a document, it cannot be modified, only removed.
-     * 
-     * A NamedRange can be accessed by any script that accesses the document. To avoid
-     *  unintended conflicts between scripts, consider prefixing range names with a unique string.
-     * 
-     *      // Create a named range that includes every table in the document.
-     *      var doc = DocumentApp.getActiveDocument();
-     *      var rangeBuilder = doc.newRange();
-     *      var tables = doc.getBody().getTables();
-     *      for (var i = 0; i < tables.length; i++) {
-     *        rangeBuilder.addElement(tables[i]);
-     *      }
-     *      doc.addNamedRange('myUniquePrefix-tables', rangeBuilder.build());
-     */
-    export interface NamedRange {
-      getId(): String;
-      getName(): String;
-      getRange(): Range;
-      remove(): void;
+      removeFromParent(): HorizontalRule;
+      setAttributes(attributes: Object): HorizontalRule;
     }
 
     /**
@@ -559,47 +655,6 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An element representing a footnote section. A FootnoteSection contains the text that
-     *  corresponds to a Footnote. The FootnoteSection may contain ListItem or
-     *  Paragraph elements. For more information on document structure, see the
-     *  guide to extending Google Docs.
-     */
-    export interface FootnoteSection {
-      appendParagraph(paragraph: Paragraph): Paragraph;
-      appendParagraph(text: String): Paragraph;
-      clear(): FootnoteSection;
-      copy(): FootnoteSection;
-      editAsText(): Text;
-      findElement(elementType: ElementType): RangeElement;
-      findElement(elementType: ElementType, from: RangeElement): RangeElement;
-      findText(searchPattern: String): RangeElement;
-      findText(searchPattern: String, from: RangeElement): RangeElement;
-      getAttributes(): Object;
-      getChild(childIndex: Integer): Element;
-      getChildIndex(child: Element): Integer;
-      getNextSibling(): Element;
-      getNumChildren(): Integer;
-      getParagraphs(): Paragraph[];
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getText(): String;
-      getTextAlignment(): TextAlignment;
-      getType(): ElementType;
-      insertParagraph(childIndex: Integer, paragraph: Paragraph): Paragraph;
-      insertParagraph(childIndex: Integer, text: String): Paragraph;
-      removeChild(child: Element): FootnoteSection;
-      removeFromParent(): FootnoteSection;
-      replaceText(searchPattern: String, replacement: String): Element;
-      setAttributes(attributes: Object): FootnoteSection;
-      setText(text: String): FootnoteSection;
-      setTextAlignment(textAlignment: TextAlignment): FootnoteSection;
-      getFootnotes(): Footnote[];
-      getLinkUrl(): String;
-      isAtDocumentEnd(): Boolean;
-      setLinkUrl(url: String): FootnoteSection;
-    }
-
-    /**
      * An element representing an embedded image. An InlineImage can be contained within a
      *  ListItem or Paragraph, unless the ListItem or Paragraph is within
      *  a FootnoteSection. An InlineImage cannot itself contain any other element. For
@@ -628,103 +683,71 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An element representing a header section. A
-     *  Document typically
-     *  contains at most one HeaderSection. The HeaderSection may contain
-     *  ListItem, Paragraph, and Table elements. For more information on document
+     * An element representing a page break. A PageBreak can be contained within a
+     *  ListItem or Paragraph, unless the ListItem or Paragraph is within
+     *  a Table, HeaderSection, FooterSection, or FootnoteSection. A
+     *  PageBreak cannot itself contain any other element. For more information on document
      *  structure, see the
      *  guide to extending Google Docs.
      */
-    export interface HeaderSection {
-      appendHorizontalRule(): HorizontalRule;
-      appendImage(image: Base.BlobSource): InlineImage;
-      appendImage(image: InlineImage): InlineImage;
-      appendListItem(listItem: ListItem): ListItem;
-      appendListItem(text: String): ListItem;
-      appendParagraph(paragraph: Paragraph): Paragraph;
-      appendParagraph(text: String): Paragraph;
-      appendTable(): Table;
-      appendTable(cells: String[][]): Table;
-      appendTable(table: Table): Table;
-      clear(): HeaderSection;
-      copy(): HeaderSection;
-      editAsText(): Text;
-      findElement(elementType: ElementType): RangeElement;
-      findElement(elementType: ElementType, from: RangeElement): RangeElement;
-      findText(searchPattern: String): RangeElement;
-      findText(searchPattern: String, from: RangeElement): RangeElement;
+    export interface PageBreak {
+      copy(): PageBreak;
       getAttributes(): Object;
-      getChild(childIndex: Integer): Element;
-      getChildIndex(child: Element): Integer;
-      getImages(): InlineImage[];
-      getListItems(): ListItem[];
-      getNumChildren(): Integer;
-      getParagraphs(): Paragraph[];
-      getParent(): ContainerElement;
-      getTables(): Table[];
-      getText(): String;
-      getTextAlignment(): TextAlignment;
-      getType(): ElementType;
-      insertHorizontalRule(childIndex: Integer): HorizontalRule;
-      insertImage(childIndex: Integer, image: Base.BlobSource): InlineImage;
-      insertImage(childIndex: Integer, image: InlineImage): InlineImage;
-      insertListItem(childIndex: Integer, listItem: ListItem): ListItem;
-      insertListItem(childIndex: Integer, text: String): ListItem;
-      insertParagraph(childIndex: Integer, paragraph: Paragraph): Paragraph;
-      insertParagraph(childIndex: Integer, text: String): Paragraph;
-      insertTable(childIndex: Integer): Table;
-      insertTable(childIndex: Integer, cells: String[][]): Table;
-      insertTable(childIndex: Integer, table: Table): Table;
-      removeChild(child: Element): HeaderSection;
-      removeFromParent(): HeaderSection;
-      replaceText(searchPattern: String, replacement: String): Element;
-      setAttributes(attributes: Object): HeaderSection;
-      setText(text: String): HeaderSection;
-      setTextAlignment(textAlignment: TextAlignment): HeaderSection;
-      getFootnotes(): Footnote[];
-      getLinkUrl(): String;
       getNextSibling(): Element;
+      getParent(): ContainerElement;
       getPreviousSibling(): Element;
+      getType(): ElementType;
       isAtDocumentEnd(): Boolean;
-      setLinkUrl(url: String): HeaderSection;
+      removeFromParent(): PageBreak;
+      setAttributes(attributes: Object): PageBreak;
     }
 
     /**
-     * An element representing an embedded drawing. An InlineDrawing can be contained within a
-     *  ListItem or Paragraph, unless the ListItem or Paragraph is within
-     *  a FootnoteSection. An InlineDrawing cannot itself contain any other element. For
-     *  more information on document structure, see the
-     *  guide to extending Google Docs.
+     * A Range that has a name and ID to allow later retrieval. Names are not
+     *  necessarily unique; several different ranges in the same document may share the same name, much
+     *  like a class in HTML. By contrast, IDs are unique within the document, like an ID in HTML. Once a
+     *  NamedRange has been added to a document, it cannot be modified, only removed.
+     * 
+     * A NamedRange can be accessed by any script that accesses the document. To avoid
+     *  unintended conflicts between scripts, consider prefixing range names with a unique string.
+     * 
+     *      // Create a named range that includes every table in the document.
+     *      var doc = DocumentApp.getActiveDocument();
+     *      var rangeBuilder = doc.newRange();
+     *      var tables = doc.getBody().getTables();
+     *      for (var i = 0; i < tables.length; i++) {
+     *        rangeBuilder.addElement(tables[i]);
+     *      }
+     *      doc.addNamedRange('myUniquePrefix-tables', rangeBuilder.build());
      */
-    export interface InlineDrawing {
-      copy(): InlineDrawing;
-      getAttributes(): Object;
-      getNextSibling(): Element;
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      merge(): InlineDrawing;
-      removeFromParent(): InlineDrawing;
-      setAttributes(attributes: Object): InlineDrawing;
+    export interface NamedRange {
+      getId(): String;
+      getName(): String;
+      getRange(): Range;
+      remove(): void;
     }
 
     /**
-     * An element representing an horizontal rule. A HorizontalRule can be contained within a
-     *  ListItem or Paragraph, but cannot itself contain any other element. For more
-     *  information on document structure, see the
-     *  guide to extending Google Docs.
+     * A builder used to construct Range objects from document elements.
+     * 
+     *      // Change the user's selection to a range that includes every table in the document.
+     *      var doc = DocumentApp.getActiveDocument();
+     *      var rangeBuilder = doc.newRange();
+     *      var tables = doc.getBody().getTables();
+     *      for (var i = 0; i < tables.length; i++) {
+     *        rangeBuilder.addElement(tables[i]);
+     *      }
+     *      doc.setSelection(rangeBuilder.build());
      */
-    export interface HorizontalRule {
-      copy(): HorizontalRule;
-      getAttributes(): Object;
-      getNextSibling(): Element;
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      removeFromParent(): HorizontalRule;
-      setAttributes(attributes: Object): HorizontalRule;
+    export interface RangeBuilder {
+      addElement(element: Element): RangeBuilder;
+      addElement(textElement: Text, startOffset: Integer, endOffsetInclusive: Integer): RangeBuilder;
+      addElementsBetween(startElement: Element, endElementInclusive: Element): RangeBuilder;
+      addElementsBetween(startTextElement: Text, startOffset: Integer, endTextElementInclusive: Text, endOffsetInclusive: Integer): RangeBuilder;
+      addRange(range: Range): RangeBuilder;
+      build(): Range;
+      getRangeElements(): RangeElement[];
+      getSelectedElements(): RangeElement[];
     }
 
     /**
@@ -788,63 +811,6 @@ declare module GoogleAppsScript {
       insertBookmark(): Bookmark;
       insertInlineImage(image: Base.BlobSource): InlineImage;
       insertText(text: String): Text;
-    }
-
-    /**
-     * A builder used to construct Range objects from document elements.
-     * 
-     *      // Change the user's selection to a range that includes every table in the document.
-     *      var doc = DocumentApp.getActiveDocument();
-     *      var rangeBuilder = doc.newRange();
-     *      var tables = doc.getBody().getTables();
-     *      for (var i = 0; i < tables.length; i++) {
-     *        rangeBuilder.addElement(tables[i]);
-     *      }
-     *      doc.setSelection(rangeBuilder.build());
-     */
-    export interface RangeBuilder {
-      addElement(element: Element): RangeBuilder;
-      addElement(textElement: Text, startOffset: Integer, endOffsetInclusive: Integer): RangeBuilder;
-      addElementsBetween(startElement: Element, endElementInclusive: Element): RangeBuilder;
-      addElementsBetween(startTextElement: Text, startOffset: Integer, endTextElementInclusive: Text, endOffsetInclusive: Integer): RangeBuilder;
-      addRange(range: Range): RangeBuilder;
-      build(): Range;
-      getRangeElements(): RangeElement[];
-      getSelectedElements(): RangeElement[];
-    }
-
-    /**
-     * An element containing a table of contents. A TableOfContents may contain
-     *  ListItem, Paragraph, and Table elements, although the contents of a
-     *  TableOfContents are usually generated automatically by Google Docs. For more information
-     *  on document structure, see the
-     *  guide to extending Google Docs.
-     */
-    export interface TableOfContents {
-      clear(): TableOfContents;
-      copy(): TableOfContents;
-      editAsText(): Text;
-      findElement(elementType: ElementType): RangeElement;
-      findElement(elementType: ElementType, from: RangeElement): RangeElement;
-      findText(searchPattern: String): RangeElement;
-      findText(searchPattern: String, from: RangeElement): RangeElement;
-      getAttributes(): Object;
-      getChild(childIndex: Integer): Element;
-      getChildIndex(child: Element): Integer;
-      getLinkUrl(): String;
-      getNextSibling(): Element;
-      getNumChildren(): Integer;
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getText(): String;
-      getTextAlignment(): TextAlignment;
-      getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      removeFromParent(): TableOfContents;
-      replaceText(searchPattern: String, replacement: String): Element;
-      setAttributes(attributes: Object): TableOfContents;
-      setLinkUrl(url: String): TableOfContents;
-      setTextAlignment(textAlignment: TextAlignment): TableOfContents;
     }
 
     /**
@@ -929,6 +895,52 @@ declare module GoogleAppsScript {
       setSpacingBefore(spacingBefore: Number): Paragraph;
       setText(text: String): void;
       setTextAlignment(textAlignment: TextAlignment): Paragraph;
+    }
+
+    /**
+     * An element containing a table of contents. A TableOfContents may contain
+     *  ListItem, Paragraph, and Table elements, although the contents of a
+     *  TableOfContents are usually generated automatically by Google Docs. For more information
+     *  on document structure, see the
+     *  guide to extending Google Docs.
+     */
+    export interface TableOfContents {
+      clear(): TableOfContents;
+      copy(): TableOfContents;
+      editAsText(): Text;
+      findElement(elementType: ElementType): RangeElement;
+      findElement(elementType: ElementType, from: RangeElement): RangeElement;
+      findText(searchPattern: String): RangeElement;
+      findText(searchPattern: String, from: RangeElement): RangeElement;
+      getAttributes(): Object;
+      getChild(childIndex: Integer): Element;
+      getChildIndex(child: Element): Integer;
+      getLinkUrl(): String;
+      getNextSibling(): Element;
+      getNumChildren(): Integer;
+      getParent(): ContainerElement;
+      getPreviousSibling(): Element;
+      getText(): String;
+      getTextAlignment(): TextAlignment;
+      getType(): ElementType;
+      isAtDocumentEnd(): Boolean;
+      removeFromParent(): TableOfContents;
+      replaceText(searchPattern: String, replacement: String): Element;
+      setAttributes(attributes: Object): TableOfContents;
+      setLinkUrl(url: String): TableOfContents;
+      setTextAlignment(textAlignment: TextAlignment): TableOfContents;
+    }
+
+    /**
+     * A wrapper around an Element with a possible start and end offset. These offsets allow a
+     *  range of characters within a Text
+     *  element to be represented in search results, document selections, and named ranges.
+     */
+    export interface RangeElement {
+      getElement(): Element;
+      getEndOffsetInclusive(): Integer;
+      getStartOffset(): Integer;
+      isPartial(): Boolean;
     }
 
     /**
@@ -1065,15 +1077,154 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * A wrapper around an Element with a possible start and end offset. These offsets allow a
-     *  range of characters within a Text
-     *  element to be represented in search results, document selections, and named ranges.
+     * A generic element. Document contents are
+     *  represented as elements. For example, ListItem, Paragraph, and Table
+     *  are elements and inherit all of the methods defined by Element, such as
+     *  getType().
+     * Implementing classes
+     * 
+     * NameBrief description
+     * 
+     * BodyAn element representing a document body.
+     * 
+     * ContainerElementA generic element that may contain other elements.
+     * 
+     * EquationAn element representing a mathematical expression.
+     * 
+     * EquationFunctionAn element representing a function in a mathematical Equation.
+     * 
+     * EquationFunctionArgumentSeparatorAn element representing a function separator in a mathematical Equation.
+     * 
+     * EquationSymbolAn element representing a symbol in a mathematical Equation.
+     * 
+     * FooterSectionAn element representing a footer section.
+     * 
+     * FootnoteAn element representing a footnote.
+     * 
+     * FootnoteSectionAn element representing a footnote section.
+     * 
+     * HeaderSectionAn element representing a header section.
+     * 
+     * HorizontalRuleAn element representing an horizontal rule.
+     * 
+     * InlineDrawingAn element representing an embedded drawing.
+     * 
+     * InlineImageAn element representing an embedded image.
+     * 
+     * ListItemAn element representing a list item.
+     * 
+     * PageBreakAn element representing a page break.
+     * 
+     * ParagraphAn element representing a paragraph.
+     * 
+     * TableAn element representing a table.
+     * 
+     * TableCellAn element representing a table cell.
+     * 
+     * TableOfContentsAn element containing a table of contents.
+     * 
+     * TableRowAn element representing a table row.
+     * 
+     * TextAn element representing a rich text region.
+     * 
+     * UnsupportedElementAn element representing a region that is unknown or cannot be affected by a script, such as a
+     *  page number.
      */
-    export interface RangeElement {
-      getElement(): Element;
-      getEndOffsetInclusive(): Integer;
-      getStartOffset(): Integer;
-      isPartial(): Boolean;
+    export interface Element {
+      asBody(): Body;
+      asEquation(): Equation;
+      asEquationFunction(): EquationFunction;
+      asEquationFunctionArgumentSeparator(): EquationFunctionArgumentSeparator;
+      asEquationSymbol(): EquationSymbol;
+      asFooterSection(): FooterSection;
+      asFootnote(): Footnote;
+      asFootnoteSection(): FootnoteSection;
+      asHeaderSection(): HeaderSection;
+      asHorizontalRule(): HorizontalRule;
+      asInlineDrawing(): InlineDrawing;
+      asInlineImage(): InlineImage;
+      asListItem(): ListItem;
+      asPageBreak(): PageBreak;
+      asParagraph(): Paragraph;
+      asTable(): Table;
+      asTableCell(): TableCell;
+      asTableOfContents(): TableOfContents;
+      asTableRow(): TableRow;
+      asText(): Text;
+      copy(): Element;
+      getAttributes(): Object;
+      getNextSibling(): Element;
+      getParent(): ContainerElement;
+      getPreviousSibling(): Element;
+      getType(): ElementType;
+      isAtDocumentEnd(): Boolean;
+      merge(): Element;
+      removeFromParent(): Element;
+      setAttributes(attributes: Object): Element;
+    }
+
+    /**
+     * An element representing a table row. A TableRow is always contained within a
+     *  Table and may only contain TableCell elements. For more information on document
+     *  structure, see the
+     *  guide to extending Google Docs.
+     */
+    export interface TableRow {
+      appendTableCell(): TableCell;
+      appendTableCell(textContents: String): TableCell;
+      appendTableCell(tableCell: TableCell): TableCell;
+      clear(): TableRow;
+      copy(): TableRow;
+      editAsText(): Text;
+      findElement(elementType: ElementType): RangeElement;
+      findElement(elementType: ElementType, from: RangeElement): RangeElement;
+      findText(searchPattern: String): RangeElement;
+      findText(searchPattern: String, from: RangeElement): RangeElement;
+      getAttributes(): Object;
+      getCell(cellIndex: Integer): TableCell;
+      getChild(childIndex: Integer): Element;
+      getChildIndex(child: Element): Integer;
+      getLinkUrl(): String;
+      getMinimumHeight(): Integer;
+      getNextSibling(): Element;
+      getNumCells(): Integer;
+      getNumChildren(): Integer;
+      getParent(): ContainerElement;
+      getParentTable(): Table;
+      getPreviousSibling(): Element;
+      getText(): String;
+      getTextAlignment(): TextAlignment;
+      getType(): ElementType;
+      insertTableCell(childIndex: Integer): TableCell;
+      insertTableCell(childIndex: Integer, textContents: String): TableCell;
+      insertTableCell(childIndex: Integer, tableCell: TableCell): TableCell;
+      isAtDocumentEnd(): Boolean;
+      merge(): TableRow;
+      removeCell(cellIndex: Integer): TableCell;
+      removeChild(child: Element): TableRow;
+      removeFromParent(): TableRow;
+      replaceText(searchPattern: String, replacement: String): Element;
+      setAttributes(attributes: Object): TableRow;
+      setLinkUrl(url: String): TableRow;
+      setMinimumHeight(minHeight: Integer): TableRow;
+      setTextAlignment(textAlignment: TextAlignment): TableRow;
+    }
+
+    /**
+     * An element representing a region that is unknown or cannot be affected by a script, such as a
+     *  page number.
+     */
+    export interface UnsupportedElement {
+      copy(): UnsupportedElement;
+      getAttributes(): Object;
+      getNextSibling(): Element;
+      getParent(): ContainerElement;
+      getPreviousSibling(): Element;
+      getType(): ElementType;
+      isAtDocumentEnd(): Boolean;
+      merge(): UnsupportedElement;
+      removeFromParent(): UnsupportedElement;
+      setAttributes(attributes: Object): UnsupportedElement;
     }
 
     /**
@@ -1165,21 +1316,18 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An element representing a region that is unknown or cannot be affected by a script, such as a
-     *  page number.
+     * An enumeration of all the element types.
+     * 
+     * Use the ElementType enumeration to check the type of a given
+     *  element, for instance:
+     * 
+     *      var firstChild = DocumentApp.getActiveDocument().getBody().getChild(0);
+     *      if (firstChild.getType() == DocumentApp.ElementType.PARAGRAPH) {
+     *        // It's a paragraph, apply a paragraph heading.
+     *        firstChild.asParagraph().setHeading(DocumentApp.ParagraphHeading.HEADING1);
+     *      }
      */
-    export interface UnsupportedElement {
-      copy(): UnsupportedElement;
-      getAttributes(): Object;
-      getNextSibling(): Element;
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      merge(): UnsupportedElement;
-      removeFromParent(): UnsupportedElement;
-      setAttributes(attributes: Object): UnsupportedElement;
-    }
+    export enum ElementType { BODY_SECTION, COMMENT_SECTION, DOCUMENT, EQUATION, EQUATION_FUNCTION, EQUATION_FUNCTION_ARGUMENT_SEPARATOR, EQUATION_SYMBOL, FOOTER_SECTION, FOOTNOTE, FOOTNOTE_SECTION, HEADER_SECTION, HORIZONTAL_RULE, INLINE_DRAWING, INLINE_IMAGE, LIST_ITEM, PAGE_BREAK, PARAGRAPH, TABLE, TABLE_CELL, TABLE_OF_CONTENTS, TABLE_ROW, TEXT, UNSUPPORTED }
 
     /**
      * 
@@ -1209,53 +1357,6 @@ declare module GoogleAppsScript {
      *      body.editAsText().setFontFamily(a, b, DocumentApp.FontFamily.COMIC_SANS_MS);
      */
     export enum FontFamily { AMARANTH, ARIAL, ARIAL_BLACK, ARIAL_NARROW, ARVO, CALIBRI, CAMBRIA, COMIC_SANS_MS, CONSOLAS, CORSIVA, COURIER_NEW, DANCING_SCRIPT, DROID_SANS, DROID_SERIF, GARAMOND, GEORGIA, GLORIA_HALLELUJAH, GREAT_VIBES, LOBSTER, MERRIWEATHER, PACIFICO, PHILOSOPHER, POIRET_ONE, QUATTROCENTO, ROBOTO, SHADOWS_INTO_LIGHT, SYNCOPATE, TAHOMA, TIMES_NEW_ROMAN, TREBUCHET_MS, UBUNTU, VERDANA }
-
-    /**
-     * An element representing a table row. A TableRow is always contained within a
-     *  Table and may only contain TableCell elements. For more information on document
-     *  structure, see the
-     *  guide to extending Google Docs.
-     */
-    export interface TableRow {
-      appendTableCell(): TableCell;
-      appendTableCell(textContents: String): TableCell;
-      appendTableCell(tableCell: TableCell): TableCell;
-      clear(): TableRow;
-      copy(): TableRow;
-      editAsText(): Text;
-      findElement(elementType: ElementType): RangeElement;
-      findElement(elementType: ElementType, from: RangeElement): RangeElement;
-      findText(searchPattern: String): RangeElement;
-      findText(searchPattern: String, from: RangeElement): RangeElement;
-      getAttributes(): Object;
-      getCell(cellIndex: Integer): TableCell;
-      getChild(childIndex: Integer): Element;
-      getChildIndex(child: Element): Integer;
-      getLinkUrl(): String;
-      getMinimumHeight(): Integer;
-      getNextSibling(): Element;
-      getNumCells(): Integer;
-      getNumChildren(): Integer;
-      getParent(): ContainerElement;
-      getParentTable(): Table;
-      getPreviousSibling(): Element;
-      getText(): String;
-      getTextAlignment(): TextAlignment;
-      getType(): ElementType;
-      insertTableCell(childIndex: Integer): TableCell;
-      insertTableCell(childIndex: Integer, textContents: String): TableCell;
-      insertTableCell(childIndex: Integer, tableCell: TableCell): TableCell;
-      isAtDocumentEnd(): Boolean;
-      merge(): TableRow;
-      removeCell(cellIndex: Integer): TableCell;
-      removeChild(child: Element): TableRow;
-      removeFromParent(): TableRow;
-      replaceText(searchPattern: String, replacement: String): Element;
-      setAttributes(attributes: Object): TableRow;
-      setLinkUrl(url: String): TableRow;
-      setMinimumHeight(minHeight: Integer): TableRow;
-      setTextAlignment(textAlignment: TextAlignment): TableRow;
-    }
 
     /**
      * An enumeration of the element attributes.
@@ -1293,105 +1394,38 @@ declare module GoogleAppsScript {
     export enum GlyphType { BULLET, HOLLOW_BULLET, SQUARE_BULLET, NUMBER, LATIN_UPPER, LATIN_LOWER, ROMAN_UPPER, ROMAN_LOWER }
 
     /**
-     * A generic element. Document contents are
-     *  represented as elements. For example, ListItem, Paragraph, and Table
-     *  are elements and inherit all of the methods defined by Element, such as
-     *  getType().
-     * Implementing classes
+     * An enumeration of the supported horizontal alignment types.
      * 
-     * NameBrief description
+     * Use the HorizontalAlignment enumeration to manipulate the
+     *  alignment of Paragraph contents.
      * 
-     * BodyAn element representing a document body.
-     * 
-     * ContainerElementA generic element that may contain other elements.
-     * 
-     * EquationAn element representing a mathematical expression.
-     * 
-     * EquationFunctionAn element representing a function in a mathematical Equation.
-     * 
-     * EquationFunctionArgumentSeparatorAn element representing a function separator in a mathematical Equation.
-     * 
-     * EquationSymbolAn element representing a symbol in a mathematical Equation.
-     * 
-     * FooterSectionAn element representing a footer section.
-     * 
-     * FootnoteAn element representing a footnote.
-     * 
-     * FootnoteSectionAn element representing a footnote section.
-     * 
-     * HeaderSectionAn element representing a header section.
-     * 
-     * HorizontalRuleAn element representing an horizontal rule.
-     * 
-     * InlineDrawingAn element representing an embedded drawing.
-     * 
-     * InlineImageAn element representing an embedded image.
-     * 
-     * ListItemAn element representing a list item.
-     * 
-     * PageBreakAn element representing a page break.
-     * 
-     * ParagraphAn element representing a paragraph.
-     * 
-     * TableAn element representing a table.
-     * 
-     * TableCellAn element representing a table cell.
-     * 
-     * TableOfContentsAn element containing a table of contents.
-     * 
-     * TableRowAn element representing a table row.
-     * 
-     * TextAn element representing a rich text region.
-     * 
-     * UnsupportedElementAn element representing a region that is unknown or cannot be affected by a script, such as a
-     *  page number.
+     *      var body = DocumentApp.getActiveDocument().getBody();
+     *     
+     *      // Insert a paragraph and a table at the start of document.
+     *      var par1 = body.insertParagraph(0, "Center");
+     *      var table = body.insertTable(1, [['Left', 'Right']]);
+     *      var par2 = table.getCell(0, 0).getChild(0).asParagraph();
+     *      var par3 = table.getCell(0, 0).getChild(0).asParagraph();
+     *     
+     *      // Center align the first paragraph.
+     *      par1.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
+     *     
+     *      // Left align the first cell.
+     *      par2.setAlignment(DocumentApp.HorizontalAlignment.LEFT);
+     *     
+     *      // Right align the second cell.
+     *      par3.setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
      */
-    export interface Element {
-      asBody(): Body;
-      asEquation(): Equation;
-      asEquationFunction(): EquationFunction;
-      asEquationFunctionArgumentSeparator(): EquationFunctionArgumentSeparator;
-      asEquationSymbol(): EquationSymbol;
-      asFooterSection(): FooterSection;
-      asFootnote(): Footnote;
-      asFootnoteSection(): FootnoteSection;
-      asHeaderSection(): HeaderSection;
-      asHorizontalRule(): HorizontalRule;
-      asInlineDrawing(): InlineDrawing;
-      asInlineImage(): InlineImage;
-      asListItem(): ListItem;
-      asPageBreak(): PageBreak;
-      asParagraph(): Paragraph;
-      asTable(): Table;
-      asTableCell(): TableCell;
-      asTableOfContents(): TableOfContents;
-      asTableRow(): TableRow;
-      asText(): Text;
-      copy(): Element;
-      getAttributes(): Object;
-      getNextSibling(): Element;
-      getParent(): ContainerElement;
-      getPreviousSibling(): Element;
-      getType(): ElementType;
-      isAtDocumentEnd(): Boolean;
-      merge(): Element;
-      removeFromParent(): Element;
-      setAttributes(attributes: Object): Element;
-    }
+    export enum HorizontalAlignment { LEFT, CENTER, RIGHT, JUSTIFY }
 
     /**
-     * An enumeration of all the element types.
+     * An enumeration of the type of text alignments.
      * 
-     * Use the ElementType enumeration to check the type of a given
-     *  element, for instance:
-     * 
-     *      var firstChild = DocumentApp.getActiveDocument().getBody().getChild(0);
-     *      if (firstChild.getType() == DocumentApp.ElementType.PARAGRAPH) {
-     *        // It's a paragraph, apply a paragraph heading.
-     *        firstChild.asParagraph().setHeading(DocumentApp.ParagraphHeading.HEADING1);
-     *      }
+     *      // Make the first character in the first paragraph be superscript.
+     *      var text = DocumentApp.getActiveDocument().getBody().getParagraphs()[0].editAsText();
+     *      text.setTextAlignment(0, 0, DocumentApp.TextAlignment.SUPERSCRIPT);
      */
-    export enum ElementType { BODY_SECTION, COMMENT_SECTION, DOCUMENT, EQUATION, EQUATION_FUNCTION, EQUATION_FUNCTION_ARGUMENT_SEPARATOR, EQUATION_SYMBOL, FOOTER_SECTION, FOOTNOTE, FOOTNOTE_SECTION, HEADER_SECTION, HORIZONTAL_RULE, INLINE_DRAWING, INLINE_IMAGE, LIST_ITEM, PAGE_BREAK, PARAGRAPH, TABLE, TABLE_CELL, TABLE_OF_CONTENTS, TABLE_ROW, TEXT, UNSUPPORTED }
+    export enum TextAlignment { NORMAL, SUPERSCRIPT, SUBSCRIPT }
 
     /**
      * An enumeration of the supported vertical alignment types.
@@ -1416,15 +1450,6 @@ declare module GoogleAppsScript {
     export enum VerticalAlignment { BOTTOM, CENTER, TOP }
 
     /**
-     * An enumeration of the type of text alignments.
-     * 
-     *      // Make the first character in the first paragraph be superscript.
-     *      var text = DocumentApp.getActiveDocument().getBody().getParagraphs()[0].editAsText();
-     *      text.setTextAlignment(0, 0, DocumentApp.TextAlignment.SUPERSCRIPT);
-     */
-    export enum TextAlignment { NORMAL, SUPERSCRIPT, SUBSCRIPT }
-
-    /**
      * An enumeration of the standard paragraph headings.
      * 
      * Use the ParagraphHeading enumeration to configure
@@ -1445,31 +1470,6 @@ declare module GoogleAppsScript {
      *      par3.setHeading(DocumentApp.ParagraphHeading.NORMAL);
      */
     export enum ParagraphHeading { NORMAL, HEADING1, HEADING2, HEADING3, HEADING4, HEADING5, HEADING6, TITLE, SUBTITLE }
-
-    /**
-     * An enumeration of the supported horizontal alignment types.
-     * 
-     * Use the HorizontalAlignment enumeration to manipulate the
-     *  alignment of Paragraph contents.
-     * 
-     *      var body = DocumentApp.getActiveDocument().getBody();
-     *     
-     *      // Insert a paragraph and a table at the start of document.
-     *      var par1 = body.insertParagraph(0, "Center");
-     *      var table = body.insertTable(1, [['Left', 'Right']]);
-     *      var par2 = table.getCell(0, 0).getChild(0).asParagraph();
-     *      var par3 = table.getCell(0, 0).getChild(0).asParagraph();
-     *     
-     *      // Center align the first paragraph.
-     *      par1.setAlignment(DocumentApp.HorizontalAlignment.CENTER);
-     *     
-     *      // Left align the first cell.
-     *      par2.setAlignment(DocumentApp.HorizontalAlignment.LEFT);
-     *     
-     *      // Right align the second cell.
-     *      par3.setAlignment(DocumentApp.HorizontalAlignment.RIGHT);
-     */
-    export enum HorizontalAlignment { LEFT, CENTER, RIGHT, JUSTIFY }
 
   }
 }

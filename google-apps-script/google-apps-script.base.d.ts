@@ -3,16 +3,21 @@
 declare module GoogleAppsScript {
   export module Base {
     /**
-     * The Session class provides access to session information, such as the user's email address (in
-     *  some circumstances) and language setting.
+     * This class provides access to Google Apps specific dialog boxes.
+     * 
+     *  The methods in this class are only available for use in the context of a Google Spreadsheet.
+     * See also
+     * 
+     * ButtonSet
      */
-    export interface Session {
-      getActiveUser(): User;
-      getActiveUserLocale(): String;
-      getEffectiveUser(): User;
-      getScriptTimeZone(): String;
-      getTimeZone(): String;
-      getUser(): User;
+    export interface Browser {
+      Buttons: ButtonSet
+      inputBox(prompt: String): String;
+      inputBox(prompt: String, buttons: ButtonSet): String;
+      inputBox(title: String, prompt: String, buttons: ButtonSet): String;
+      msgBox(prompt: String): String;
+      msgBox(prompt: String, buttons: ButtonSet): String;
+      msgBox(title: String, prompt: String, buttons: ButtonSet): String;
     }
 
     /**
@@ -48,31 +53,6 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * A custom menu in an instance of the user interface for a Google App. A script can only interact
-     *  with the UI for the current instance of an open document or form, and only if the script is
-     *  container-bound to the document or form. For more
-     *  information, see the guide to menus.
-     * 
-     *      // Add a custom menu to the active spreadsheet, including a separator and a sub-menu.
-     *      function onOpen(e) {
-     *        SpreadsheetApp.getUi()
-     *            .createMenu('My Menu')
-     *            .addItem('My Menu Item', 'myFunction')
-     *            .addSeparator()
-     *            .addSubMenu(SpreadsheetApp.getUi().createMenu('My Submenu')
-     *                .addItem('One Submenu Item', 'mySecondFunction')
-     *                .addItem('Another Submenu Item', 'myThirdFunction'))
-     *            .addToUi();
-     *      }
-     */
-    export interface Menu {
-      addItem(caption: String, functionName: String): Menu;
-      addSeparator(): Menu;
-      addSubMenu(menu: Menu): Menu;
-      addToUi(): void;
-    }
-
-    /**
      * A data interchange object for Apps Script services.
      */
     export interface Blob {
@@ -94,45 +74,24 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * This class provides access to Google Apps specific dialog boxes.
-     * 
-     *  The methods in this class are only available for use in the context of a Google Spreadsheet.
-     * See also
-     * 
-     * ButtonSet
+     * The Session class provides access to session information, such as the user's email address (in
+     *  some circumstances) and language setting.
      */
-    export interface Browser {
-      Buttons: ButtonSet
-      inputBox(prompt: String): String;
-      inputBox(prompt: String, buttons: ButtonSet): String;
-      inputBox(title: String, prompt: String, buttons: ButtonSet): String;
-      msgBox(prompt: String): String;
-      msgBox(prompt: String, buttons: ButtonSet): String;
-      msgBox(title: String, prompt: String, buttons: ButtonSet): String;
+    export interface Session {
+      getActiveUser(): User;
+      getActiveUserLocale(): String;
+      getEffectiveUser(): User;
+      getScriptTimeZone(): String;
+      getTimeZone(): String;
+      getUser(): User;
     }
 
     /**
-     * A response to a prompt dialog displayed in the
-     *  user-interface environment for a Google App. The response contains any text the user entered in
-     *  the dialog's input field and indicates which button the user clicked to dismiss the dialog.
-     * 
-     *      // Display a dialog box with a title, message, input field, and "Yes" and "No" buttons. The
-     *      // user can also close the dialog by clicking the close button in its title bar.
-     *      var ui = DocumentApp.getUi();
-     *      var response = ui.prompt('Getting to know you', 'May I know your name?', ui.ButtonSet.YES_NO);
-     *     
-     *      // Process the user's response.
-     *      if (response.getSelectedButton() == ui.Button.YES) {
-     *        Logger.log('The user\'s name is %s.', response.getResponseText());
-     *      } else if (response.getSelectedButton() == ui.Button.NO) {
-     *        Logger.log('The user didn\'t want to provide a name.');
-     *      } else {
-     *        Logger.log('The user clicked the close button in the dialog\'s title bar.');
-     *      }
+     * Representation of a user, suitable for scripting.
      */
-    export interface PromptResponse {
-      getResponseText(): String;
-      getSelectedButton(): Button;
+    export interface User {
+      getEmail(): String;
+      getUserLoginId(): String;
     }
 
     /**
@@ -173,11 +132,91 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * Representation of a user, suitable for scripting.
+     * A response to a prompt dialog displayed in the
+     *  user-interface environment for a Google App. The response contains any text the user entered in
+     *  the dialog's input field and indicates which button the user clicked to dismiss the dialog.
+     * 
+     *      // Display a dialog box with a title, message, input field, and "Yes" and "No" buttons. The
+     *      // user can also close the dialog by clicking the close button in its title bar.
+     *      var ui = DocumentApp.getUi();
+     *      var response = ui.prompt('Getting to know you', 'May I know your name?', ui.ButtonSet.YES_NO);
+     *     
+     *      // Process the user's response.
+     *      if (response.getSelectedButton() == ui.Button.YES) {
+     *        Logger.log('The user\'s name is %s.', response.getResponseText());
+     *      } else if (response.getSelectedButton() == ui.Button.NO) {
+     *        Logger.log('The user didn\'t want to provide a name.');
+     *      } else {
+     *        Logger.log('The user clicked the close button in the dialog\'s title bar.');
+     *      }
      */
-    export interface User {
-      getEmail(): String;
-      getUserLoginId(): String;
+    export interface PromptResponse {
+      getResponseText(): String;
+      getSelectedButton(): Button;
+    }
+
+    /**
+     * A custom menu in an instance of the user interface for a Google App. A script can only interact
+     *  with the UI for the current instance of an open document or form, and only if the script is
+     *  container-bound to the document or form. For more
+     *  information, see the guide to menus.
+     * 
+     *      // Add a custom menu to the active spreadsheet, including a separator and a sub-menu.
+     *      function onOpen(e) {
+     *        SpreadsheetApp.getUi()
+     *            .createMenu('My Menu')
+     *            .addItem('My Menu Item', 'myFunction')
+     *            .addSeparator()
+     *            .addSubMenu(SpreadsheetApp.getUi().createMenu('My Submenu')
+     *                .addItem('One Submenu Item', 'mySecondFunction')
+     *                .addItem('Another Submenu Item', 'myThirdFunction'))
+     *            .addToUi();
+     *      }
+     */
+    export interface Menu {
+      addItem(caption: String, functionName: String): Menu;
+      addSeparator(): Menu;
+      addSubMenu(menu: Menu): Menu;
+      addToUi(): void;
+    }
+
+    /**
+     * Interface for objects that can export their data as a Blob.
+     * Implementing classes
+     * 
+     * NameBrief description
+     * 
+     * AttachmentA Sites Attachment such as a file attached to a page.
+     * 
+     * BlobA data interchange object for Apps Script services.
+     * 
+     * ChartA Chart object, which can be embedded into documents, UI elements, or used as a static image.
+     * 
+     * DocumentA document, containing rich text and elements such as tables and lists.
+     * 
+     * EmbeddedChartRepresents a chart that has been embedded into a Spreadsheet.
+     * 
+     * FileA file in Google Drive.
+     * 
+     * GmailAttachmentAn attachment from Gmail.
+     * 
+     * HTTPResponseThis class allows users to access specific information on HTTP responses.
+     * 
+     * HtmlOutputAn HtmlOutput object that can be served from a script.
+     * 
+     * InlineImageAn element representing an embedded image.
+     * 
+     * JdbcBlobA JDBC Blob.
+     * 
+     * JdbcClobA JDBC Clob.
+     * 
+     * SpreadsheetThis class allows users to access and modify Google Sheets files.
+     * 
+     * StaticMapAllows for the creation and decoration of static map images.
+     */
+    export interface BlobSource {
+      getAs(contentType: String): Blob;
+      getBlob(): Blob;
     }
 
     /**
@@ -220,62 +259,20 @@ declare module GoogleAppsScript {
     export enum Button { CLOSE, OK, CANCEL, YES, NO }
 
     /**
-     * An enum representing the days of the week.
-     */
-    export enum Weekday { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY }
-
-    /**
      * An enum representing the months of the year.
      */
     export enum Month { JANUARY, FEBRUARY, MARCH, APRIL, MAY, JUNE, JULY, AUGUST, SEPTEMBER, OCTOBER, NOVEMBER, DECEMBER }
 
     /**
-     * Interface for objects that can export their data as a Blob.
-     * Implementing classes
-     * 
-     * NameBrief description
-     * 
-     * AttachmentA Sites Attachment such as a file attached to a page.
-     * 
-     * BlobA data interchange object for Apps Script services.
-     * 
-     * ChartA Chart object, which can be embedded into documents, UI elements, or used as a static image.
-     * 
-     * DocumentA document, containing rich text and elements such as tables and lists.
-     * 
-     * EmbeddedChartRepresents a chart that has been embedded into a Spreadsheet.
-     * 
-     * FileThis class contains methods to get information about the file and modify its
-     *  contents.
-     * 
-     * FileA file in Google Drive.
-     * 
-     * GmailAttachmentAn attachment from Gmail.
-     * 
-     * HTTPResponseThis class allows users to access specific information on HTTP responses.
-     * 
-     * HtmlOutputAn HtmlOutput object that can be served from a script.
-     * 
-     * InlineImageAn element representing an embedded image.
-     * 
-     * JdbcBlobA JDBC Blob.
-     * 
-     * JdbcClobA JDBC Clob.
-     * 
-     * SpreadsheetThis class allows users to access and modify Google Sheets files.
-     * 
-     * StaticMapAllows for the creation and decoration of static map images.
+     * An enum representing the days of the week.
      */
-    export interface BlobSource {
-      getAs(contentType: String): Blob;
-      getBlob(): Blob;
-    }
+    export enum Weekday { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY }
 
   }
 }
 
-declare var Session: GoogleAppsScript.Base.Session;
+declare var Browser: GoogleAppsScript.Base.Browser;
 // conflicts with MimeType in lib.d.ts
 // declare var MimeType: GoogleAppsScript.Base.MimeType;
 declare var Logger: GoogleAppsScript.Base.Logger;
-declare var Browser: GoogleAppsScript.Base.Browser;
+declare var Session: GoogleAppsScript.Base.Session;

@@ -5,6 +5,23 @@ declare module GoogleAppsScript {
     /**
      * 
      * Deprecated. This class is deprecated and should not be used in new scripts.
+     * User Properties are key-value pairs unique to a user. User Properties are scoped per user; any
+     *  script running under the identity of a user can access User Properties for that user only.
+     */
+    export interface UserProperties {
+      deleteAllProperties(): UserProperties;
+      deleteProperty(key: String): UserProperties;
+      getKeys(): String[];
+      getProperties(): Object;
+      getProperty(key: String): String;
+      setProperties(properties: Object): UserProperties;
+      setProperties(properties: Object, deleteAllOthers: Boolean): UserProperties;
+      setProperty(key: String, value: String): UserProperties;
+    }
+
+    /**
+     * 
+     * Deprecated. This class is deprecated and should not be used in new scripts.
      * Script Properties are key-value pairs stored by a script in a persistent store. Script Properties
      *  are scoped per script, regardless of which user runs the script.
      */
@@ -61,26 +78,9 @@ declare module GoogleAppsScript {
       setProperty(key: String, value: String): Properties;
     }
 
-    /**
-     * 
-     * Deprecated. This class is deprecated and should not be used in new scripts.
-     * User Properties are key-value pairs unique to a user. User Properties are scoped per user; any
-     *  script running under the identity of a user can access User Properties for that user only.
-     */
-    export interface UserProperties {
-      deleteAllProperties(): UserProperties;
-      deleteProperty(key: String): UserProperties;
-      getKeys(): String[];
-      getProperties(): Object;
-      getProperty(key: String): String;
-      setProperties(properties: Object): UserProperties;
-      setProperties(properties: Object, deleteAllOthers: Boolean): UserProperties;
-      setProperty(key: String, value: String): UserProperties;
-    }
-
   }
 }
 
+declare var UserProperties: GoogleAppsScript.Properties.UserProperties;
 declare var ScriptProperties: GoogleAppsScript.Properties.ScriptProperties;
 declare var PropertiesService: GoogleAppsScript.Properties.PropertiesService;
-declare var UserProperties: GoogleAppsScript.Properties.UserProperties;

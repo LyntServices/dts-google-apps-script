@@ -4,6 +4,30 @@
 declare module GoogleAppsScript {
   export module URL_Fetch {
     /**
+     * 
+     * Deprecated. This class is deprecated and should not be used in new scripts.
+     * Represents configuration settings for an OAuth-enabled remote service.
+     * See also
+     * 
+     * UrlFetchApp
+     */
+    export interface OAuthConfig {
+      getAccessTokenUrl(): String;
+      getAuthorizationUrl(): String;
+      getMethod(): String;
+      getParamLocation(): String;
+      getRequestTokenUrl(): String;
+      getServiceName(): String;
+      setAccessTokenUrl(url: String): void;
+      setAuthorizationUrl(url: String): void;
+      setConsumerKey(consumerKey: String): void;
+      setConsumerSecret(consumerSecret: String): void;
+      setMethod(method: String): void;
+      setParamLocation(location: String): void;
+      setRequestTokenUrl(url: String): void;
+    }
+
+    /**
      * Fetch resources and communicate with other hosts over the Internet.
      * 
      *  This service allows scripts to communicate with other applications or access other resources on
@@ -40,30 +64,6 @@ declare module GoogleAppsScript {
       getContentText(charset: String): String;
       getHeaders(): Object;
       getResponseCode(): Integer;
-    }
-
-    /**
-     * 
-     * Deprecated. This class is deprecated and should not be used in new scripts.
-     * Represents configuration settings for an OAuth-enabled remote service.
-     * See also
-     * 
-     * UrlFetchApp
-     */
-    export interface OAuthConfig {
-      getAccessTokenUrl(): String;
-      getAuthorizationUrl(): String;
-      getMethod(): String;
-      getParamLocation(): String;
-      getRequestTokenUrl(): String;
-      getServiceName(): String;
-      setAccessTokenUrl(url: String): void;
-      setAuthorizationUrl(url: String): void;
-      setConsumerKey(consumerKey: String): void;
-      setConsumerSecret(consumerSecret: String): void;
-      setMethod(method: String): void;
-      setParamLocation(location: String): void;
-      setRequestTokenUrl(url: String): void;
     }
 
   }

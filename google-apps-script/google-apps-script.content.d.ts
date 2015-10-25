@@ -3,11 +3,6 @@
 declare module GoogleAppsScript {
   export module Content {
     /**
-     * An enum for mime types that can be served from a script.
-     */
-    export enum MimeType { ATOM, CSV, ICAL, JAVASCRIPT, JSON, RSS, TEXT, VCARD, XML }
-
-    /**
      * Service for returning text content from a script.
      * 
      *  You can serve up text in various forms. For example, publish this script as a web app.
@@ -47,6 +42,11 @@ declare module GoogleAppsScript {
       setContent(content: String): TextOutput;
       setMimeType(mimeType: MimeType): TextOutput;
     }
+
+    /**
+     * An enum for mime types that can be served from a script.
+     */
+    export enum MimeType { ATOM, CSV, ICAL, JAVASCRIPT, JSON, RSS, TEXT, VCARD, XML }
 
   }
 }

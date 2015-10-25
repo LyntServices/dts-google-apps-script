@@ -4,18 +4,25 @@
 declare module GoogleAppsScript {
   export module Sites {
     /**
-     * A Comment attached to any Sites page.
+     * Create and access Google Sites.
      */
-    export interface Comment {
-      deleteComment(): void;
-      getAuthorEmail(): String;
-      getAuthorName(): String;
-      getContent(): String;
-      getDatePublished(): Date;
-      getLastUpdated(): Date;
-      getParent(): Page;
-      setContent(content: String): Comment;
-      setParent(parent: Page): Comment;
+    export interface SitesApp {
+      AttachmentType: AttachmentType
+      PageType: PageType
+      copySite(domain: String, name: String, title: String, summary: String, site: Site): Site;
+      createSite(domain: String, name: String, title: String, summary: String): Site;
+      getActivePage(): Page;
+      getActiveSite(): Site;
+      getAllSites(domain: String): Site[];
+      getAllSites(domain: String, start: Integer, max: Integer): Site[];
+      getPageByUrl(url: String): Page;
+      getSite(name: String): Site;
+      getSite(domain: String, name: String): Site;
+      getSiteByUrl(url: String): Site;
+      getSites(): Site[];
+      getSites(start: Integer, max: Integer): Site[];
+      getSites(domain: String): Site[];
+      getSites(domain: String, start: Integer, max: Integer): Site[];
     }
 
     /**
@@ -66,25 +73,18 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * Create and access Google Sites.
+     * A Comment attached to any Sites page.
      */
-    export interface SitesApp {
-      AttachmentType: AttachmentType
-      PageType: PageType
-      copySite(domain: String, name: String, title: String, summary: String, site: Site): Site;
-      createSite(domain: String, name: String, title: String, summary: String): Site;
-      getActivePage(): Page;
-      getActiveSite(): Site;
-      getAllSites(domain: String): Site[];
-      getAllSites(domain: String, start: Integer, max: Integer): Site[];
-      getPageByUrl(url: String): Page;
-      getSite(name: String): Site;
-      getSite(domain: String, name: String): Site;
-      getSiteByUrl(url: String): Site;
-      getSites(): Site[];
-      getSites(start: Integer, max: Integer): Site[];
-      getSites(domain: String): Site[];
-      getSites(domain: String, start: Integer, max: Integer): Site[];
+    export interface Comment {
+      deleteComment(): void;
+      getAuthorEmail(): String;
+      getAuthorName(): String;
+      getContent(): String;
+      getDatePublished(): Date;
+      getLastUpdated(): Date;
+      getParent(): Page;
+      setContent(content: String): Comment;
+      setParent(parent: Page): Comment;
     }
 
     /**
@@ -95,6 +95,71 @@ declare module GoogleAppsScript {
       getName(): String;
       getParent(): Page;
       setName(name: String): Column;
+    }
+
+    /**
+     * An object representing a Google Site.
+     */
+    export interface Site {
+      addEditor(emailAddress: String): Site;
+      addEditor(user: Base.User): Site;
+      addEditors(emailAddresses: String[]): Site;
+      addOwner(email: String): Site;
+      addOwner(user: Base.User): Site;
+      addViewer(emailAddress: String): Site;
+      addViewer(user: Base.User): Site;
+      addViewers(emailAddresses: String[]): Site;
+      createAnnouncementsPage(title: String, name: String, html: String): Page;
+      createFileCabinetPage(title: String, name: String, html: String): Page;
+      createListPage(title: String, name: String, html: String, columnNames: String[]): Page;
+      createPageFromTemplate(title: String, name: String, template: Page): Page;
+      createWebPage(title: String, name: String, html: String): Page;
+      getAllDescendants(): Page[];
+      getAllDescendants(options: Object): Page[];
+      getChildByName(name: String): Page;
+      getChildren(): Page[];
+      getChildren(options: Object): Page[];
+      getEditors(): Base.User[];
+      getName(): String;
+      getOwners(): Base.User[];
+      getSummary(): String;
+      getTemplates(): Page[];
+      getTheme(): String;
+      getTitle(): String;
+      getUrl(): String;
+      getViewers(): Base.User[];
+      removeEditor(emailAddress: String): Site;
+      removeEditor(user: Base.User): Site;
+      removeOwner(email: String): Site;
+      removeOwner(user: Base.User): Site;
+      removeViewer(emailAddress: String): Site;
+      removeViewer(user: Base.User): Site;
+      search(query: String): Page[];
+      search(query: String, options: Object): Page[];
+      setSummary(summary: String): Site;
+      setTheme(theme: String): Site;
+      setTitle(title: String): Site;
+      addCollaborator(email: String): Site;
+      addCollaborator(user: Base.User): Site;
+      createAnnouncement(title: String, html: String, parent: Page): Page;
+      createComment(inReplyTo: String, html: String, parent: Page): Comment;
+      createListItem(html: String, columnNames: String[], values: String[], parent: Page): ListItem;
+      createWebAttachment(title: String, url: String, parent: Page): Attachment;
+      deleteSite(): void;
+      getAnnouncements(): Page[];
+      getAnnouncementsPages(): Page[];
+      getAttachments(): Attachment[];
+      getCollaborators(): Base.User[];
+      getComments(): Comment[];
+      getFileCabinetPages(): Page[];
+      getListItems(): ListItem[];
+      getListPages(): Page[];
+      getSelfLink(): String;
+      getSiteName(): String;
+      getWebAttachments(): Attachment[];
+      getWebPages(): Page[];
+      removeCollaborator(email: String): Site;
+      removeCollaborator(user: Base.User): Site;
     }
 
     /**
@@ -163,71 +228,6 @@ declare module GoogleAppsScript {
       addComment(content: String): Comment;
       getPageName(): String;
       getSelfLink(): String;
-    }
-
-    /**
-     * An object representing a Google Site.
-     */
-    export interface Site {
-      addEditor(emailAddress: String): Site;
-      addEditor(user: Base.User): Site;
-      addEditors(emailAddresses: String[]): Site;
-      addOwner(email: String): Site;
-      addOwner(user: Base.User): Site;
-      addViewer(emailAddress: String): Site;
-      addViewer(user: Base.User): Site;
-      addViewers(emailAddresses: String[]): Site;
-      createAnnouncementsPage(title: String, name: String, html: String): Page;
-      createFileCabinetPage(title: String, name: String, html: String): Page;
-      createListPage(title: String, name: String, html: String, columnNames: String[]): Page;
-      createPageFromTemplate(title: String, name: String, template: Page): Page;
-      createWebPage(title: String, name: String, html: String): Page;
-      getAllDescendants(): Page[];
-      getAllDescendants(options: Object): Page[];
-      getChildByName(name: String): Page;
-      getChildren(): Page[];
-      getChildren(options: Object): Page[];
-      getEditors(): Base.User[];
-      getName(): String;
-      getOwners(): Base.User[];
-      getSummary(): String;
-      getTemplates(): Page[];
-      getTheme(): String;
-      getTitle(): String;
-      getUrl(): String;
-      getViewers(): Base.User[];
-      removeEditor(emailAddress: String): Site;
-      removeEditor(user: Base.User): Site;
-      removeOwner(email: String): Site;
-      removeOwner(user: Base.User): Site;
-      removeViewer(emailAddress: String): Site;
-      removeViewer(user: Base.User): Site;
-      search(query: String): Page[];
-      search(query: String, options: Object): Page[];
-      setSummary(summary: String): Site;
-      setTheme(theme: String): Site;
-      setTitle(title: String): Site;
-      addCollaborator(email: String): Site;
-      addCollaborator(user: Base.User): Site;
-      createAnnouncement(title: String, html: String, parent: Page): Page;
-      createComment(inReplyTo: String, html: String, parent: Page): Comment;
-      createListItem(html: String, columnNames: String[], values: String[], parent: Page): ListItem;
-      createWebAttachment(title: String, url: String, parent: Page): Attachment;
-      deleteSite(): void;
-      getAnnouncements(): Page[];
-      getAnnouncementsPages(): Page[];
-      getAttachments(): Attachment[];
-      getCollaborators(): Base.User[];
-      getComments(): Comment[];
-      getFileCabinetPages(): Page[];
-      getListItems(): ListItem[];
-      getListPages(): Page[];
-      getSelfLink(): String;
-      getSiteName(): String;
-      getWebAttachments(): Attachment[];
-      getWebPages(): Page[];
-      removeCollaborator(email: String): Site;
-      removeCollaborator(user: Base.User): Site;
     }
 
   }

@@ -177,17 +177,23 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An enum representing classes of users who can access a file or folder, besides any individual
-     *  users who have been explicitly given access. These properties can be accessed from
-     *  DriveApp.Access.
+     * A user associated with a file in Google Drive. Users can be accessed from
+     *  File.getEditors(), Folder.getViewers(), and other methods.
      * 
-     *      // Creates a folder that anyone on the Internet can read from and write to. (Domain
-     *      // administrators can prohibit this setting for users of Google Apps for Business, Google Apps
-     *      // for Education, or Google Apps for Your Domain.)
-     *      var folder = DriveApp.createFolder('Shared Folder');
-     *      folder.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.EDIT);
+     *      // Log the email address of all users who have edit access to a file.
+     *      var file = DriveApp.getFileById('1234567890abcdefghijklmnopqrstuvwxyz');
+     *      var editors = file.getEditors();
+     *      for (var i = 0; i < editors.length; i++) {
+     *        Logger.log(editors[i].getEmail());
+     *      }
      */
-    export enum Access { ANYONE, ANYONE_WITH_LINK, DOMAIN, DOMAIN_WITH_LINK, PRIVATE }
+    export interface User {
+      getDomain(): String;
+      getEmail(): String;
+      getName(): String;
+      getPhotoUrl(): String;
+      getUserLoginId(): String;
+    }
 
     /**
      * An iterator that allows scripts to iterate over a potentially large collection of files. File
@@ -207,19 +213,6 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An enum representing the permissions granted to users who can access a file or folder, besides
-     *  any individual users who have been explicitly given access. These properties can be accessed from
-     *  DriveApp.Permission.
-     * 
-     *      // Creates a folder that anyone on the Internet can read from and write to. (Domain
-     *      // administrators can prohibit this setting for users of Google Apps for Business, Google Apps
-     *      // for Education, or Google Apps for Your Domain.)
-     *      var folder = DriveApp.createFolder('Shared Folder');
-     *      folder.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.EDIT);
-     */
-    export enum Permission { VIEW, EDIT, COMMENT, OWNER, NONE }
-
-    /**
      * An object that allows scripts to iterate over a potentially large collection of folders. Folder
      *  iterators can be acccessed from DriveApp, a File, or a Folder.
      * 
@@ -237,23 +230,30 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * A user associated with a file in Google Drive. Users can be accessed from
-     *  File.getEditors(), Folder.getViewers(), and other methods.
+     * An enum representing the permissions granted to users who can access a file or folder, besides
+     *  any individual users who have been explicitly given access. These properties can be accessed from
+     *  DriveApp.Permission.
      * 
-     *      // Log the email address of all users who have edit access to a file.
-     *      var file = DriveApp.getFileById('1234567890abcdefghijklmnopqrstuvwxyz');
-     *      var editors = file.getEditors();
-     *      for (var i = 0; i < editors.length; i++) {
-     *        Logger.log(editors[i].getEmail());
-     *      }
+     *      // Creates a folder that anyone on the Internet can read from and write to. (Domain
+     *      // administrators can prohibit this setting for users of Google Apps for Business, Google Apps
+     *      // for Education, or Google Apps for Your Domain.)
+     *      var folder = DriveApp.createFolder('Shared Folder');
+     *      folder.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.EDIT);
      */
-    export interface User {
-      getDomain(): String;
-      getEmail(): String;
-      getName(): String;
-      getPhotoUrl(): String;
-      getUserLoginId(): String;
-    }
+    export enum Permission { VIEW, EDIT, COMMENT, OWNER, NONE }
+
+    /**
+     * An enum representing classes of users who can access a file or folder, besides any individual
+     *  users who have been explicitly given access. These properties can be accessed from
+     *  DriveApp.Access.
+     * 
+     *      // Creates a folder that anyone on the Internet can read from and write to. (Domain
+     *      // administrators can prohibit this setting for users of Google Apps for Business, Google Apps
+     *      // for Education, or Google Apps for Your Domain.)
+     *      var folder = DriveApp.createFolder('Shared Folder');
+     *      folder.setSharing(DriveApp.Access.ANYONE, DriveApp.Permission.EDIT);
+     */
+    export enum Access { ANYONE, ANYONE_WITH_LINK, DOMAIN, DOMAIN_WITH_LINK, PRIVATE }
 
   }
 }

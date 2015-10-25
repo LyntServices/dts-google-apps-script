@@ -4,30 +4,6 @@
 declare module GoogleAppsScript {
   export module Maps {
     /**
-     * A collection of enums used by DirectionFinder.
-     */
-    export interface DirectionFinderEnums {
-      Avoid: Avoid
-      Mode: Mode
-    }
-
-    /**
-     * Allows for direction finding, geocoding, elevation sampling and the creation of static map
-     *  images.
-     */
-    export interface Maps {
-      DirectionFinder: DirectionFinderEnums
-      StaticMap: StaticMapEnums
-      decodePolyline(polyline: String): Number[];
-      encodePolyline(points: Number[]): String;
-      newDirectionFinder(): DirectionFinder;
-      newElevationSampler(): ElevationSampler;
-      newGeocoder(): Geocoder;
-      newStaticMap(): StaticMap;
-      setAuthentication(clientId: String, signingKey: String): void;
-    }
-
-    /**
      * Allows for the retrieval of directions between locations.
      *  
      *  The example below shows how you can use this class to get the directions from Times Square to
@@ -99,6 +75,30 @@ declare module GoogleAppsScript {
     }
 
     /**
+     * A collection of enums used by DirectionFinder.
+     */
+    export interface DirectionFinderEnums {
+      Avoid: Avoid
+      Mode: Mode
+    }
+
+    /**
+     * Allows for direction finding, geocoding, elevation sampling and the creation of static map
+     *  images.
+     */
+    export interface Maps {
+      DirectionFinder: DirectionFinderEnums
+      StaticMap: StaticMapEnums
+      decodePolyline(polyline: String): Number[];
+      encodePolyline(points: Number[]): String;
+      newDirectionFinder(): DirectionFinder;
+      newElevationSampler(): ElevationSampler;
+      newGeocoder(): Geocoder;
+      newStaticMap(): StaticMap;
+      setAuthentication(clientId: String, signingKey: String): void;
+    }
+
+    /**
      * Allows for the conversion between an address and geographical coordinates.
      *  
      *  The example below shows how you can use this class find the top nine matches for the location
@@ -136,16 +136,6 @@ declare module GoogleAppsScript {
       setBounds(swLatitude: Number, swLongitude: Number, neLatitude: Number, neLongitude: Number): Geocoder;
       setLanguage(language: String): Geocoder;
       setRegion(region: String): Geocoder;
-    }
-
-    /**
-     * A collection of enums used by StaticMap.
-     */
-    export interface StaticMapEnums {
-      Color: Color
-      Format: Format
-      MarkerSize: MarkerSize
-      Type: Type
     }
 
     /**
@@ -220,30 +210,14 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An enum representing the format of the map image.
-     * See also
-     * 
-     * Google Static Maps API
+     * A collection of enums used by StaticMap.
      */
-    export enum Format { PNG, PNG8, PNG32, GIF, JPG, JPG_BASELINE }
-
-    /**
-     * An enum representing the named colors available to use in map images.
-     */
-    export enum Color { BLACK, BROWN, GREEN, PURPLE, YELLOW, BLUE, GRAY, ORANGE, RED, WHITE }
-
-    /**
-     * An enum representing the size of a marker added to a map.
-     * See also
-     * 
-     * Google Static Maps API
-     */
-    export enum MarkerSize { TINY, MID, SMALL }
-
-    /**
-     * An enum representing the types of restrictions to avoid when finding directions.
-     */
-    export enum Avoid { TOLLS, HIGHWAYS }
+    export interface StaticMapEnums {
+      Color: Color
+      Format: Format
+      MarkerSize: MarkerSize
+      Type: Type
+    }
 
     /**
      * Allows for the sampling of elevations at particular locations.
@@ -296,9 +270,30 @@ declare module GoogleAppsScript {
     }
 
     /**
-     * An enum representing the mode of travel to use when finding directions.
+     * An enum representing the format of the map image.
+     * See also
+     * 
+     * Google Static Maps API
      */
-    export enum Mode { DRIVING, WALKING, BICYCLING, TRANSIT }
+    export enum Format { PNG, PNG8, PNG32, GIF, JPG, JPG_BASELINE }
+
+    /**
+     * An enum representing the named colors available to use in map images.
+     */
+    export enum Color { BLACK, BROWN, GREEN, PURPLE, YELLOW, BLUE, GRAY, ORANGE, RED, WHITE }
+
+    /**
+     * An enum representing the size of a marker added to a map.
+     * See also
+     * 
+     * Google Static Maps API
+     */
+    export enum MarkerSize { TINY, MID, SMALL }
+
+    /**
+     * An enum representing the types of restrictions to avoid when finding directions.
+     */
+    export enum Avoid { TOLLS, HIGHWAYS }
 
     /**
      * An enum representing the type of map to render.
@@ -307,6 +302,11 @@ declare module GoogleAppsScript {
      * Google Static Maps API
      */
     export enum Type { ROADMAP, SATELLITE, TERRAIN, HYBRID }
+
+    /**
+     * An enum representing the mode of travel to use when finding directions.
+     */
+    export enum Mode { DRIVING, WALKING, BICYCLING, TRANSIT }
 
   }
 }

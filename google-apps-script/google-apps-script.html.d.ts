@@ -4,8 +4,28 @@
 declare module GoogleAppsScript {
   export module HTML {
     /**
+     * Service for returning HTML and other text content from a script.
+     * 
+     * Due to security considerations, scripts cannot directly return content to a browser. Instead,
+     *  they must sanitize the HTML so that it cannot perform malicious actions. See the description of
+     *  HtmlOutput for what limitations this implies on what can be returned.
+     */
+    export interface HtmlService {
+      SandboxMode: SandboxMode
+      createHtmlOutput(): HtmlOutput;
+      createHtmlOutput(blob: Base.BlobSource): HtmlOutput;
+      createHtmlOutput(html: String): HtmlOutput;
+      createHtmlOutputFromFile(filename: String): HtmlOutput;
+      createTemplate(blob: Base.BlobSource): HtmlTemplate;
+      createTemplate(html: String): HtmlTemplate;
+      createTemplateFromFile(filename: String): HtmlTemplate;
+      getUserAgent(): String;
+    }
+
+    /**
      * An enum representing the sandbox modes that can be used for client-side HtmlService
-     *  scripts. These values can be accessed from HtmlService.SandboxMode.
+     *  scripts. These values can be accessed from HtmlService.SandboxMode, and set by calling
+     *  HtmlOutput.setSandboxMode(mode).
      * 
      * To protect users from being served malicious HTML or JavaScript, client-side code served from
      *  HTML service executes in a security sandbox that imposes restrictions on the code. The method
@@ -34,24 +54,6 @@ declare module GoogleAppsScript {
      *      </script>
      */
     export enum SandboxMode { EMULATED, IFRAME, NATIVE }
-
-    /**
-     * Service for returning HTML and other text content from a script.
-     * 
-     * Due to security considerations, scripts cannot directly return content to a browser. Instead,
-     *  they must sanitize the HTML so that it cannot perform malicious actions. See the description of
-     *  HtmlOutput for what limitations this implies on what can be returned.
-     */
-    export interface HtmlService {
-      SandboxMode: SandboxMode
-      createHtmlOutput(): HtmlOutput;
-      createHtmlOutput(blob: Base.BlobSource): HtmlOutput;
-      createHtmlOutput(html: String): HtmlOutput;
-      createHtmlOutputFromFile(filename: String): HtmlOutput;
-      createTemplate(blob: Base.BlobSource): HtmlTemplate;
-      createTemplate(html: String): HtmlTemplate;
-      createTemplateFromFile(filename: String): HtmlTemplate;
-    }
 
     /**
      * A template object for dynamically constructing HTML. For more information, see the
